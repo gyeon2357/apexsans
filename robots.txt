@@ -1,0 +1,8 @@
+# 사이트 본문만 검색에 노출한다.
+# dev/는 시험 페이지와 검증 코드라 색인될 이유가 없다 —
+# 정적 호스팅은 올린 파일을 그대로 다 내보내므로 여기서 막아 둔다.
+User-agent: *
+Disallow: /dev/
+
+# 배포할 때 실제 주소로 바꾼다.
+# Sitemap: https://example.com/sitemap.xml

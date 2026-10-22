@@ -1,0 +1,324 @@
+:root {
+  --footline-ui: calc(1.5rem + env(safe-area-inset-bottom) + var(--browser-bar));
+  --footline-gap: 0.1875rem;
+  --footline-bottom: calc(var(--footline-ui) - var(--footline-gap));
+  --footline-h: 0.5px;
+  --footline-h-lap2: 2px;
+}
+
+/* == Progress line ===================================== */
+
+.page-line {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: var(--footline-bottom);
+  z-index: 1000;
+  height: var(--footline-h);
+  mix-blend-mode: difference;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.stack__index,
+.stack__cta {
+  min-height: var(--bottom-row-h, 1.5rem);
+  align-items: center;
+}
+
+.stack__cta {
+  --cta-reach: calc(var(--footline-gap) - var(--footline-h));
+  bottom: calc(var(--footline-ui) - var(--cta-drop) - var(--cta-reach));
+  min-height: calc(var(--bottom-row-h) + 2 * var(--cta-reach));
+  translate: 0 calc(-1 * var(--cta-drop));
+}
+
+:root {
+  --cta-shift: 0rem;
+}
+
+.page-line__lap {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  translate: 0 -50%;
+  background: var(--accent-blend);
+}
+
+.page-line__lap--slides {
+  height: var(--footline-h);
+  width: calc(var(--lap-slides, 0) * 100%);
+}
+
+.page-line__lap--rest {
+  height: var(--footline-h-lap2);
+  width: calc(var(--lap-rest, 0) * 100%);
+}
+
+[data-theme="red"] .page-line {
+  mix-blend-mode: normal;
+}
+
+[data-theme="red"] .page-line__lap {
+  background: var(--accent);
+}
+
+body.probe-intro .page-line {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.main-screen {
+  cursor: crosshair;
+}
+
+/* == Probe board ======================================= */
+
+.probe {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(var(--probe-cols, 8), 1fr);
+  grid-auto-rows: var(--probe-row, var(--probe-cell, 6rem));
+  align-content: center;
+  overflow: hidden;
+  pointer-events: auto;
+  touch-action: pan-y;
+}
+
+.probe__cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--probe-row, var(--probe-cell, 6rem));
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font: inherit;
+  cursor: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* == Checkerboard — removable block ==================== */
+
+.probe__cell.is-alt {
+  background: oklch(1 0 0);
+  color: oklch(0 0 0);
+}
+
+/* == end Checkerboard ================================== */
+
+.probe__cell span {
+  font-family: var(--apex);
+  font-size: calc(var(--probe-cell, 6rem) * 0.82);
+  line-height: 1;
+  user-select: none;
+  visibility: hidden;
+  display: block;
+  height: 1em;
+}
+
+@keyframes probe-letter-in {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.probe__cell.is-on span {
+  visibility: visible;
+  animation: probe-letter-in 240ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* == Demo letters — removable block ==================== */
+
+@keyframes probe-letter-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.probe__cell.is-demo span {
+  visibility: visible;
+  animation: probe-letter-in 240ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.probe__cell.is-demo.is-demo-out span {
+  animation: probe-letter-out 240ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+/* == end Demo letters ================================== */
+
+/* == Intro cloth ======================================= */
+
+.probe__cloth {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transition: opacity 0.16s linear;
+}
+
+.probe {
+  --probe-sway: 1;
+}
+
+/* == Idle drift — removable block ====================== */
+
+.probe.is-live {
+  animation: probe-drift 11s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes probe-drift {
+  0%,
+  50%,
+  100% {
+    transform: none;
+  }
+  25% {
+    transform: translate3d(calc(0.35% * var(--probe-sway)), calc(-0.2% * var(--probe-sway)), 0)
+      rotate(calc(0.12deg * var(--probe-sway)));
+  }
+  75% {
+    transform: translate3d(calc(-0.35% * var(--probe-sway)), calc(0.2% * var(--probe-sway)), 0)
+      rotate(calc(-0.12deg * var(--probe-sway)));
+  }
+}
+
+.probe.is-locked {
+  animation: none;
+}
+
+/* == end Idle drift ==================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .probe.is-live {
+    animation: none;
+  }
+}
+
+.probe.is-locked {
+  pointer-events: none;
+}
+
+.probe.is-cloth {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+body.probe-intro .site-header,
+body.probe-intro .stack__cta,
+body.probe-intro .stack__index,
+body.probe-intro .probe__meter,
+body.probe-intro .probe__hint,
+body.probe-intro.keep-header.main-screen-visible .site-header {
+  opacity: 0;
+  visibility: hidden;
+}
+
+body.probe-past .probe__meter,
+body.probe-past .probe__hint {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.probe__hint {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--probe-pad, 0px) + 4rem);
+  transform: translateX(-50%);
+  z-index: 4;
+  margin: 0;
+  font-family: var(--apex);
+  font-size: 0.5625rem;
+  letter-spacing: var(--tiny-track);
+  text-transform: uppercase;
+  color: oklch(1 0 0);
+  mix-blend-mode: difference;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.probe__hint.is-hidden {
+  opacity: 0;
+}
+
+.probe__meter {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--probe-pad, 0px) + 3.25rem);
+  transform: translateX(-50%);
+  z-index: 4;
+  width: 7.5rem;
+  height: 2px;
+  background: oklch(1 0 0 / 0.12);
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+
+.probe__meter::before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: calc(var(--probe-fill, 0) * 100%);
+  background: oklch(1 0 0 / 0.55);
+  transition: width 0.35s ease;
+}
+
+.probe__meter.is-waiting::before {
+  transition: width var(--probe-wait, 3000ms) linear;
+}
+
+.probe__meter.is-reset::before {
+  transition: none;
+}
+
+@media (max-width: 640px) {
+  .probe__hint {
+    bottom: calc(var(--probe-pad, 0px) + 4.375rem + env(safe-area-inset-bottom));
+    font-size: 0.5rem;
+  }
+
+  .probe__meter {
+    bottom: calc(var(--probe-pad, 0px) + 3.5rem + env(safe-area-inset-bottom));
+    width: 7rem;
+    height: 3px;
+    background: oklch(1 0 0 / 0.34);
+  }
+}
+
+.main-screen-track {
+  --main-hold: 0svh;
+}
+
+@media (max-width: 640px) {
+  .main-screen-track {
+    --main-hold: 40svh;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --footline-ui: calc(1rem + env(safe-area-inset-bottom));
+  }
+
+  .stack__index-dots {
+    align-self: center;
+    margin-bottom: 0;
+  }
+}
