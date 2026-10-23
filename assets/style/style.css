@@ -3203,13 +3203,20 @@ input[type="range"]::-moz-range-track {
   justify-self: start;
 }
 
-.site-footer__cta {
-  margin-bottom: 4rem;
+.site-footer__buy {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  width: 100%;
-  max-width: 75rem;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.site-footer__buy-note {
+  margin: 0;
+  font-family: var(--info-font);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--text-faint);
 }
 
 .site-footer__cta-mail {
@@ -3873,11 +3880,6 @@ input[type="range"]::-moz-range-track {
   .use-cases__item .placeholder-media {
     aspect-ratio: 3 / 4;
     height: 480px;
-  }
-
-  .site-footer__cta {
-    gap: 0.5rem;
-    margin-bottom: 2rem;
   }
 
   .site-footer__info,
@@ -4768,10 +4770,6 @@ html[data-debug] .stack[data-stack="sticky"][data-sticky-ok="no"]::before {
   min-height: 40vh;
 }
 
-.site-footer__cta {
-  min-height: 20vh;
-}
-
 @media (min-width: 1800px) {
   .specimen__intro,
   .specimen__anatomy,
@@ -4783,8 +4781,7 @@ html[data-debug] .stack[data-stack="sticky"][data-sticky-ok="no"]::before {
 @media (max-width: 900px) {
   .specimen__intro,
   .specimen__anatomy,
-  .specimen__opentype,
-  .site-footer__cta {
+  .specimen__opentype {
     min-height: 0;
   }
 }
