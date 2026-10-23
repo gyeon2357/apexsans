@@ -3398,13 +3398,11 @@ input[type="range"]::-moz-range-track {
 }
 
 .site-footer__price {
-  font-size: 1rem;
   color: var(--text);
 }
 
 .site-footer__price-note {
   margin-left: 0.375rem;
-  font-size: 0.75rem;
   color: var(--text-faint);
 }
 
