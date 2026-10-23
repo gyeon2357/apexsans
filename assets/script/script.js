@@ -2021,6 +2021,10 @@ function initLanguageToggle() {
     document.documentElement.setAttribute("lang", lang === "en" ? "en" : "ko");
     document.documentElement.setAttribute("data-lang", lang);
 
+    document.querySelectorAll("[data-href-ko][data-href-en]").forEach((el) => {
+      el.setAttribute("href", lang === "en" ? el.dataset.hrefEn : el.dataset.hrefKo);
+    });
+
     document.querySelectorAll("[data-ko][data-en]").forEach((el) => {
       if (el.id === "testerPreview") return;
       const next = lang === "en" ? el.dataset.en : el.dataset.ko;
@@ -3630,6 +3634,8 @@ function initUseCasesCarousel() {
         copy.removeAttribute("hidden");
         const txt = currentLang() === "en" ? copy.dataset.en : copy.dataset.ko;
         if (txt !== undefined) copy.textContent = txt;
+        const mail = currentLang() === "en" ? copy.dataset.hrefEn : copy.dataset.hrefKo;
+        if (mail) copy.setAttribute("href", mail);
         slot.appendChild(copy);
 
         const money = cap
