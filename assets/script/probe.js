@@ -33,6 +33,7 @@
   const GLYPH_RESUME_MS = 3000;
   const INTRO_MS = 3400;
   const INTRO_OUT_MS = 300;
+  const INTRO_WAIT_MAX_MS = 2000;
   const CLOTH_FADE_MS = 160;
   const CLOTH_CALM_MS = 2400;
   const CLOTH_GUST_S = 0.8;
@@ -689,11 +690,21 @@
     build();
     onClothResize = build;
 
-    let t0 = performance.now();
+    let t0 = 0;
+    let started = false;
     let settleFrom = null;
+
+    function begin() {
+      if (started) return;
+      started = true;
+      t0 = performance.now();
+      deadman = window.setTimeout(land, INTRO_MS + INTRO_OUT_MS + 1200);
+      window.requestAnimationFrame(frame);
+    }
 
     skipIntro = () => {
       if (settleFrom) return;
+      begin();
       t0 = performance.now() - INTRO_MS;
     };
 
@@ -748,13 +759,24 @@
       }, CLOTH_FADE_MS);
     }
 
-    const deadman = window.setTimeout(land, INTRO_MS + INTRO_OUT_MS + 1200);
+    let deadman = 0;
 
     document.addEventListener("visibilitychange", () => {
-      if (!document.hidden && !landed) window.requestAnimationFrame(frame);
+      if (started && !document.hidden && !landed) window.requestAnimationFrame(frame);
     });
 
-    window.requestAnimationFrame(frame);
+    resample();
+    draw(CLOTH_ZOOM);
+
+    const loaded =
+      document.readyState === "complete"
+        ? Promise.resolve()
+        : new Promise((resolve) => window.addEventListener("load", resolve, { once: true }));
+    const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    const giveUp = new Promise((resolve) => window.setTimeout(resolve, INTRO_WAIT_MAX_MS));
+    Promise.race([Promise.all([loaded, fontsReady]), giveUp]).then(() => {
+      window.requestAnimationFrame(() => window.requestAnimationFrame(begin));
+    });
   }
 
   let onClothResize = null;
