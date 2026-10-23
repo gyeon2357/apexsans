@@ -3141,6 +3141,17 @@ function initStackBuyCta() {
   }, { threshold: 0 }).observe(target);
 }
 
+function initToTopPin() {
+  var wrap = document.querySelector(".site-footer__totop");
+  var credit = document.getElementById("Credit");
+  if (!wrap || !credit || typeof window.IntersectionObserver !== "function") return;
+
+  new window.IntersectionObserver(function (entries) {
+    var top = entries[entries.length - 1].boundingClientRect.top;
+    wrap.classList.toggle("is-pinned", top < window.innerHeight);
+  }, { threshold: 0 }).observe(credit);
+}
+
 function initSectionNav() {
   const nav = document.getElementById("sectionNav");
   if (!nav) return;
@@ -3864,6 +3875,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initSectionNav();
   initSectionNavAlign();
   initStackBuyCta();
+  initToTopPin();
   initShareButton();
   initMailCopyButton();
   initUseCasesCarousel();

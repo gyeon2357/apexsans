@@ -1818,13 +1818,35 @@ main .specimen__heading {
   display: flex;
   width: 100%;
   justify-content: flex-end;
+  min-height: 2.5rem;
   padding: 0 0 2rem;
 }
 
 .site-footer__totop .footer-btn {
+  position: fixed;
+  right: var(--footer-pad-x);
+  bottom: calc(1.5rem + env(safe-area-inset-bottom) + var(--browser-bar));
+  z-index: 2000;
   font-family: var(--info-font);
   font-size: var(--footer-aux-font);
-  color: var(--text-faint);
+  mix-blend-mode: difference;
+  --bracket-color: var(--blend-fg);
+  color: var(--blend-fg);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease, background-color var(--t-hover), color var(--t-hover);
+}
+
+.site-footer__totop.is-pinned .footer-btn {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.site-footer__totop.is-pinned .footer-btn:hover,
+.site-footer__totop.is-pinned .footer-btn:focus-visible {
+  mix-blend-mode: normal;
 }
 
 .jump-link,
