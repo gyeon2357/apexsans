@@ -1886,6 +1886,16 @@ main .specimen__heading {
   color: var(--on-accent);
 }
 
+.site-footer__buy .footer-btn:not(:hover):not(:focus-visible) {
+  --bracket-color: var(--text);
+  background-color: var(--text);
+  color: var(--bg);
+}
+
+.site-footer__cta-links + .site-footer__cta-mail {
+  margin-bottom: 1.5rem;
+}
+
 .tester {
   --panel-bg: var(--bg);
   --panel-fg: 1 0 0;
@@ -3208,7 +3218,7 @@ input[type="range"]::-moz-range-track {
   flex-direction: column;
   align-items: flex-start;
   gap: 1rem;
-  margin-top: 1.5rem;
+  margin-top: 0.25rem;
 }
 
 .site-footer__buy-note {
