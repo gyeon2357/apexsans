@@ -34,6 +34,8 @@
   const INTRO_MS = 3400;
   const INTRO_OUT_MS = 300;
   const INTRO_WAIT_MAX_MS = 2000;
+  const INTRO_WAIT_RETURNING_MS = 250;
+  const INTRO_SEEN_KEY = "apex-intro-seen";
   const CLOTH_FADE_MS = 160;
   const CLOTH_CALM_MS = 2400;
   const CLOTH_GUST_S = 0.8;
@@ -768,14 +770,22 @@
     resample();
     draw(CLOTH_ZOOM);
 
+    let returning = false;
+    try {
+      returning = window.localStorage.getItem(INTRO_SEEN_KEY) === "1";
+      window.localStorage.setItem(INTRO_SEEN_KEY, "1");
+    } catch (e) {}
+
     const loaded =
-      document.readyState === "complete"
+      returning || document.readyState === "complete"
         ? Promise.resolve()
         : new Promise((resolve) => window.addEventListener("load", resolve, { once: true }));
     const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
-    const giveUp = new Promise((resolve) => window.setTimeout(resolve, INTRO_WAIT_MAX_MS));
+    const giveUp = new Promise((resolve) =>
+      window.setTimeout(resolve, returning ? INTRO_WAIT_RETURNING_MS : INTRO_WAIT_MAX_MS)
+    );
     Promise.race([Promise.all([loaded, fontsReady]), giveUp]).then(() => {
-      window.requestAnimationFrame(() => window.requestAnimationFrame(begin));
+      window.requestAnimationFrame(begin);
     });
   }
 
