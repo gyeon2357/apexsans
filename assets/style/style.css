@@ -1825,7 +1825,7 @@ main .specimen__heading {
 .site-footer__totop .footer-btn {
   position: fixed;
   right: var(--footer-pad-x);
-  bottom: calc(var(--footline-ui) + var(--bottom-row-h) / 2);
+  bottom: calc(var(--footline-ui) + var(--bottom-row-h) / 2 + 1rem);
   translate: 0 50%;
   z-index: 2000;
   font-family: var(--info-font);
@@ -3255,7 +3255,7 @@ input[type="range"]::-moz-range-track {
   margin: 0;
   font-family: var(--info-font);
   font-size: var(--footer-aux-font);
-  color: var(--text);
+  color: var(--text-faint);
 }
 
 .site-footer__cta-mail-address {
