@@ -3373,8 +3373,10 @@ input[type="range"]::-moz-range-track {
   font-size: 0.8125rem;
   font-weight: 400;
   margin: 0;
-  text-decoration: underline;
-  text-underline-position: under;
+}
+
+.site-footer__license-group > :not(.site-footer__license-title) {
+  margin-inline-start: 1rem;
 }
 
 .site-footer__license-sublist {

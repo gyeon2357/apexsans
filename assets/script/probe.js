@@ -47,11 +47,11 @@
   const CLOTH_PASSES = 1;
 
   const CLOTH_TUNE = {
-    wide:   { WIND: 2, WAVE: 0.85, SPEED: 0.55, SKEW: 3.5, ANCHOR: 0.75, ZOOM: 1.03, GUST: 2, SWAY: 0.8, SWAY_HZ: 0.22 },
-    narrow: { WIND: 3.2, WAVE: 0.55, SPEED: 0.65, SKEW: 2.6, ANCHOR: 0.55, ZOOM: 1.1, GUST: 4, SWAY: 0, SWAY_HZ: 0.22 },
+    wide:   { WIND: 2, WAVE: 0.85, SPEED: 0.55, SKEW: 3.5, ANCHOR: 0.75, ZOOM: 1.03, GUST: 2, SWAY: 0.8, SWAY_X: 0.3, SWAY_HZ: 0.22 },
+    narrow: { WIND: 3.2, WAVE: 0.55, SPEED: 0.65, SKEW: 2.6, ANCHOR: 0.55, ZOOM: 1.1, GUST: 4, SWAY: 0, SWAY_X: 0.3, SWAY_HZ: 0.22 },
   };
   let CLOTH_WIND, CLOTH_WAVE, CLOTH_SPEED, CLOTH_SKEW, CLOTH_ANCHOR, CLOTH_ZOOM, CLOTH_GUST;
-  let CLOTH_SWAY, CLOTH_SWAY_HZ;
+  let CLOTH_SWAY, CLOTH_SWAY_X, CLOTH_SWAY_HZ;
 
   function tuneCloth() {
     const t = CLOTH_TUNE[window.innerWidth >= WIDE_FROM ? "wide" : "narrow"];
@@ -63,6 +63,7 @@
     CLOTH_ZOOM = t.ZOOM;
     CLOTH_GUST = t.GUST;
     CLOTH_SWAY = t.SWAY;
+    CLOTH_SWAY_X = t.SWAY_X;
     CLOTH_SWAY_HZ = t.SWAY_HZ;
   }
   tuneCloth();
@@ -574,7 +575,7 @@
       const force = ((CLOTH_WIND * geo.cell) / 120) * calm;
       const sway = CLOTH_SWAY * geo.cell * Math.min(1, calm) * Math.min(1, t / 0.8);
       const sw = t * CLOTH_SWAY_HZ * TAU;
-      const gx = sway * (Math.sin(sw) + 0.5 * Math.sin(sw * 1.7));
+      const gx = sway * CLOTH_SWAY_X * (Math.sin(sw) + 0.5 * Math.sin(sw * 1.7));
       const gy = sway * 0.7 * Math.sin(sw * 1.3);
       for (let k = 0; k < free.length; k++) {
         if (free[k]) continue;
