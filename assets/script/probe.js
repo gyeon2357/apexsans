@@ -31,13 +31,13 @@
   ];
   const GLYPH_CYCLE_MS = 3000;
   const GLYPH_RESUME_MS = 3000;
-  const INTRO_MS = 3400;
+  const INTRO_MS = 5000;
   const INTRO_OUT_MS = 300;
   const INTRO_WAIT_MAX_MS = 2000;
   const INTRO_WAIT_RETURNING_MS = 250;
   const INTRO_SEEN_KEY = "apex-intro-seen";
   const CLOTH_FADE_MS = 160;
-  const CLOTH_CALM_MS = 2400;
+  const CLOTH_CALM_MS = 3200;
   const CLOTH_GUST_S = 0.8;
 
   const CLOTH_SMOOTH = 4;
@@ -47,10 +47,11 @@
   const CLOTH_PASSES = 1;
 
   const CLOTH_TUNE = {
-    wide:   { WIND: 2, WAVE: 0.85, SPEED: 0.55, SKEW: 3.5, ANCHOR: 0.75, ZOOM: 1.03, GUST: 2 },
-    narrow: { WIND: 3.2, WAVE: 0.55, SPEED: 0.65, SKEW: 2.6, ANCHOR: 0.55, ZOOM: 1.1, GUST: 4 },
+    wide:   { WIND: 2, WAVE: 0.85, SPEED: 0.55, SKEW: 3.5, ANCHOR: 0.75, ZOOM: 1.03, GUST: 2, SWAY: 0.8, SWAY_HZ: 0.22 },
+    narrow: { WIND: 3.2, WAVE: 0.55, SPEED: 0.65, SKEW: 2.6, ANCHOR: 0.55, ZOOM: 1.1, GUST: 4, SWAY: 0, SWAY_HZ: 0.22 },
   };
   let CLOTH_WIND, CLOTH_WAVE, CLOTH_SPEED, CLOTH_SKEW, CLOTH_ANCHOR, CLOTH_ZOOM, CLOTH_GUST;
+  let CLOTH_SWAY, CLOTH_SWAY_HZ;
 
   function tuneCloth() {
     const t = CLOTH_TUNE[window.innerWidth >= WIDE_FROM ? "wide" : "narrow"];
@@ -61,6 +62,8 @@
     CLOTH_ANCHOR = t.ANCHOR;
     CLOTH_ZOOM = t.ZOOM;
     CLOTH_GUST = t.GUST;
+    CLOTH_SWAY = t.SWAY;
+    CLOTH_SWAY_HZ = t.SWAY_HZ;
   }
   tuneCloth();
 
@@ -569,6 +572,15 @@
     function wind(t, calm) {
       const TAU = Math.PI * 2;
       const force = ((CLOTH_WIND * geo.cell) / 120) * calm;
+      const sway = CLOTH_SWAY * geo.cell * Math.min(1, calm) * Math.min(1, t / 0.8);
+      const sw = t * CLOTH_SWAY_HZ * TAU;
+      const gx = sway * (Math.sin(sw) + 0.5 * Math.sin(sw * 1.7));
+      const gy = sway * 0.7 * Math.sin(sw * 1.3);
+      for (let k = 0; k < free.length; k++) {
+        if (free[k]) continue;
+        px[k] = ox[k] = rx[k] + gx;
+        py[k] = oy[k] = ry[k] + gy;
+      }
       for (let j = 1; j < RH; j++) {
         const v = j / RH;
         for (let i = 1; i < CW; i++) {
@@ -580,8 +592,8 @@
           const vy0 = (py[k] - oy[k]) * CLOTH_DAMP;
           ox[k] = px[k];
           oy[k] = py[k];
-          px[k] += vx0 + Math.sin(phase) * amp * 0.5 + (rx[k] - px[k]) * CLOTH_PULL;
-          py[k] += vy0 + Math.cos(phase * 0.85) * amp + (ry[k] - py[k]) * CLOTH_PULL;
+          px[k] += vx0 + Math.sin(phase) * amp * 0.5 + (rx[k] + gx - px[k]) * CLOTH_PULL;
+          py[k] += vy0 + Math.cos(phase * 0.85) * amp + (ry[k] + gy - py[k]) * CLOTH_PULL;
         }
       }
     }
@@ -669,9 +681,9 @@
       }
       ctx.fillStyle = "#fff";
       ctx.beginPath();
-      for (let r = 0; r < geo.rows; r++) {
-        for (let c = 0; c < geo.cols; c++) {
-          if ((r + c) % 2 !== 1) continue;
+      for (let r = -CLOTH_PAD; r < geo.rows + CLOTH_PAD; r++) {
+        for (let c = -CLOTH_PAD; c < geo.cols + CLOTH_PAD; c++) {
+          if (((r + c) % 2 + 2) % 2 !== 1) continue;
           const i0 = c + CLOTH_PAD;
           const j0 = r + CLOTH_PAD;
           const top = j0 * hStride + i0 * CLOTH_SMOOTH;
