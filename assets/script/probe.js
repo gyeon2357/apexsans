@@ -31,13 +31,12 @@
   ];
   const GLYPH_CYCLE_MS = 3000;
   const GLYPH_RESUME_MS = 3000;
-  const INTRO_MS = 5000;
   const INTRO_OUT_MS = 300;
   const INTRO_WAIT_MAX_MS = 2000;
   const INTRO_WAIT_RETURNING_MS = 250;
   const INTRO_SEEN_KEY = "apex-intro-seen";
   const CLOTH_FADE_MS = 160;
-  const CLOTH_CALM_MS = 3200;
+  const CLOTH_CALM_MS = 2000;
   const CLOTH_GUST_S = 0.8;
 
   const CLOTH_SMOOTH = 4;
@@ -47,10 +46,10 @@
   const CLOTH_PASSES = 1;
 
   const CLOTH_TUNE = {
-    wide:   { WIND: 3, WAVE: 0.85, SPEED: 0.55, SKEW: 3.5, ANCHOR: 0.75, ZOOM: 1.03, GUST: 2 },
-    narrow: { WIND: 3.2, WAVE: 0.55, SPEED: 0.65, SKEW: 2.6, ANCHOR: 0.55, ZOOM: 1.1, GUST: 4 },
+    wide:   { WIND: 2.5, WAVE: .75, SPEED: 0.85, SKEW: 1.7, ANCHOR: 0.55, ZOOM: 1.06, GUST: 3, INTRO: 4000 },
+    narrow: { WIND: 3.2, WAVE: 0.55, SPEED: 0.65, SKEW: 2.6, ANCHOR: 0.55, ZOOM: 1.1, GUST: 4, INTRO: 3000 },
   };
-  let CLOTH_WIND, CLOTH_WAVE, CLOTH_SPEED, CLOTH_SKEW, CLOTH_ANCHOR, CLOTH_ZOOM, CLOTH_GUST;
+  let CLOTH_WIND, CLOTH_WAVE, CLOTH_SPEED, CLOTH_SKEW, CLOTH_ANCHOR, CLOTH_ZOOM, CLOTH_GUST, INTRO_MS;
 
   function tuneCloth() {
     const t = CLOTH_TUNE[window.innerWidth >= WIDE_FROM ? "wide" : "narrow"];
@@ -61,6 +60,7 @@
     CLOTH_ANCHOR = t.ANCHOR;
     CLOTH_ZOOM = t.ZOOM;
     CLOTH_GUST = t.GUST;
+    INTRO_MS = t.INTRO;
   }
   tuneCloth();
 
