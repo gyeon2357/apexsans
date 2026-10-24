@@ -36,7 +36,7 @@
   const INTRO_WAIT_RETURNING_MS = 250;
   const INTRO_SEEN_KEY = "apex-intro-seen";
   const CLOTH_FADE_MS = 160;
-  const CLOTH_CALM_MS = 2000;
+  const CLOTH_CALM_MS = 1600;
   const CLOTH_GUST_S = 0.8;
 
   const CLOTH_SMOOTH = 4;
