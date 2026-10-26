@@ -1,0 +1,114 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://apexsans.com/#designer",
+      "name": "박창규",
+      "alternateName": "Park Chang Gyu",
+      "jobTitle": "Type designer"
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://apexsans.com/#typeface",
+      "name": "APEX SANS",
+      "alternateName": [
+        "에이펙스 산스",
+        "Apex Sans"
+      ],
+      "genre": [
+        "Typeface",
+        "Display sans-serif"
+      ],
+      "description": "F1 머신의 와이드한 비율과 속도감을 표현한 한글 제목용 글꼴. 한글과 로마자(라틴)를 지원하는 디스플레이 산세리프.",
+      "creator": {
+        "@id": "https://apexsans.com/#designer"
+      },
+      "datePublished": "2026-08",
+      "inLanguage": [
+        "ko",
+        "en"
+      ],
+      "keywords": "한글 제목용 글꼴, 디스플레이 서체, 산세리프, 타이포그래피, F1, Korean typeface, Hangul font, Latin, type design",
+      "encodingFormat": [
+        "font/otf",
+        "font/ttf"
+      ],
+      "url": "https://apexsans.com/",
+      "image": "https://apexsans.com/assets/images/og-image.jpg",
+      "license": "https://apexsans.com/#Credit",
+      "isPartOf": {
+        "@id": "https://apexsans.com/#website"
+      },
+      "additionalProperty": [
+        {
+          "@type": "PropertyValue",
+          "name": "Writing systems",
+          "value": [
+            "Hangul",
+            "Latin"
+          ]
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Supported languages",
+          "value": [
+            "Korean",
+            "English"
+          ]
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Hangul syllables",
+          "value": 2280,
+          "unitText": "glyphs"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Basic Latin",
+          "value": 139,
+          "unitText": "glyphs"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Symbols",
+          "value": 939,
+          "unitText": "glyphs"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Character encoding",
+          "value": "Unicode"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "File format",
+          "value": "OTF / TTF"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "OpenType features",
+          "value": [
+            "ss01",
+            "ss02"
+          ]
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Style",
+          "value": "Display (title) sans-serif, wide proportions"
+        }
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://apexsans.com/#website",
+      "url": "https://apexsans.com/",
+      "name": "APEX SANS",
+      "inLanguage": [
+        "ko",
+        "en"
+      ]
+    }
+  ]
+}
