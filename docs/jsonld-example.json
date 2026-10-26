@@ -3,10 +3,18 @@
   "@graph": [
     {
       "@type": "Person",
-      "@id": "https://apexsans.com/#designer",
+      "@id": "https://apexsans.com/#font-designer",
       "name": "박창규",
       "alternateName": "Park Chang Gyu",
-      "jobTitle": "Type designer"
+      "jobTitle": "Type designer",
+      "url": "https://apexsans.com/#Credit"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://apexsans.com/#site-designer",
+      "name": "Park Jeong Gyeon",
+      "jobTitle": "Web designer",
+      "url": "https://apexsans.com/#Credit"
     },
     {
       "@type": "CreativeWork",
@@ -22,7 +30,7 @@
       ],
       "description": "F1 머신의 와이드한 비율과 속도감을 표현한 한글 제목용 글꼴. 한글과 로마자(라틴)를 지원하는 디스플레이 산세리프.",
       "creator": {
-        "@id": "https://apexsans.com/#designer"
+        "@id": "https://apexsans.com/#font-designer"
       },
       "datePublished": "2026-08",
       "inLanguage": [
@@ -108,7 +116,10 @@
       "inLanguage": [
         "ko",
         "en"
-      ]
+      ],
+      "creator": {
+        "@id": "https://apexsans.com/#site-designer"
+      }
     }
   ]
 }
