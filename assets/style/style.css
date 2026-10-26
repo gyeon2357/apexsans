@@ -1851,9 +1851,14 @@ main .specimen__heading {
   pointer-events: auto;
 }
 
-.site-footer__totop.is-pinned .footer-btn:hover,
+.site-footer__totop.is-pinned .footer-btn:hover {
+  mix-blend-mode: normal;
+}
+
 .site-footer__totop.is-pinned .footer-btn:focus-visible {
   mix-blend-mode: normal;
+  outline: 1px solid currentColor;
+  outline-offset: 0.125rem;
 }
 
 .jump-link,

@@ -1303,8 +1303,12 @@ function initGlyphBrowser() {
   function selectGlyph(ch, btn) {
     grid.querySelectorAll(".glyph-cell.is-active").forEach((el) => {
       el.classList.remove("is-active");
+      el.tabIndex = -1;
     });
-    if (btn) btn.classList.add("is-active");
+    if (btn) {
+      btn.classList.add("is-active");
+      btn.tabIndex = 0;
+    }
     currentSelection = ch;
     bigChar.textContent = ch;
     if (unicodeLabel) {
@@ -1326,7 +1330,9 @@ function initGlyphBrowser() {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "glyph-cell";
+      btn.tabIndex = -1;
       btn.textContent = ch;
+      btn.addEventListener("focus", () => selectGlyph(ch, btn));
       btn.addEventListener("mouseenter", () => selectGlyph(ch, btn));
       btn.addEventListener("click", () => selectGlyph(ch, btn));
       fragment.appendChild(btn);
@@ -1342,6 +1348,32 @@ function initGlyphBrowser() {
   }
 
   renderGrid();
+
+  function gridColumns(cells) {
+    const top = cells[0].offsetTop;
+    let n = 0;
+    while (n < cells.length && cells[n].offsetTop === top) n++;
+    return Math.max(n, 1);
+  }
+
+  grid.addEventListener("keydown", (e) => {
+    const cell = e.target && e.target.closest ? e.target.closest(".glyph-cell") : null;
+    if (!cell || e.altKey || e.ctrlKey || e.metaKey) return;
+    const cells = Array.prototype.slice.call(grid.querySelectorAll(".glyph-cell"));
+    const at = cells.indexOf(cell);
+    const cols = gridColumns(cells);
+    let to = -1;
+    if (e.key === "ArrowRight") to = at + 1;
+    else if (e.key === "ArrowLeft") to = at - 1;
+    else if (e.key === "ArrowDown") to = at + cols;
+    else if (e.key === "ArrowUp") to = at - cols;
+    else if (e.key === "Home") to = 0;
+    else if (e.key === "End") to = cells.length - 1;
+    else return;
+    e.preventDefault();
+    to = Math.min(Math.max(to, 0), cells.length - 1);
+    if (cells[to]) cells[to].focus();
+  });
 
   const BROWSE_HOLD_MS = 260;
   const AXIS_SLOP = 8;

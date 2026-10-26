@@ -4,5 +4,4 @@
 User-agent: *
 Disallow: /dev/
 
-# 배포할 때 실제 주소로 바꾼다.
-# Sitemap: https://apexsans.com/sitemap.xml
+Sitemap: https://apexsans.com/sitemap.xml
