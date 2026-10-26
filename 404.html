@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko" data-lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#080808" />
+<title>404 — APEX SANS</title>
+<link rel="preload" href="/assets/fonts/ApexSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  @font-face {
+    font-family: "ApexSans";
+    src: url("/assets/fonts/ApexSans-Regular.woff2") format("woff2");
+    font-display: swap;
+  }
+
+  :root {
+    --cell: clamp(5rem, 14vw, 11rem);
+    --bg: #080808;
+    --text: #fff;
+    --text-faint: rgba(255, 255, 255, 0.72);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    background: #000;
+    color: var(--text);
+  }
+
+  body {
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    font-family: "Pretendard", system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    font-size: 0.8125rem;
+  }
+
+  .checker {
+    position: fixed;
+    inset: 0;
+    background: repeating-conic-gradient(#fff 0% 25%, #000 0% 50%) 0 0 / calc(var(--cell) * 2) calc(var(--cell) * 2);
+    animation: drift 14s linear infinite;
+  }
+
+  @keyframes drift {
+    to {
+      background-position: calc(var(--cell) * 2) 0;
+    }
+  }
+
+  .panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    width: min(28rem, calc(100vw - 2.25rem));
+    padding: 2rem 1.75rem 1.75rem;
+    background: var(--bg);
+  }
+
+  .code {
+    margin: 0;
+    font-family: "ApexSans", system-ui, sans-serif;
+    font-size: clamp(4.5rem, 20vw, 8rem);
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+  }
+
+  .msg {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .sub {
+    margin: 0;
+    color: var(--text-faint);
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .home {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    background: var(--text);
+    color: var(--bg);
+    font-size: 0.8125rem;
+    text-decoration: none;
+  }
+
+  .home:hover,
+  .home:focus-visible {
+    background: #e10600;
+    color: #fff;
+  }
+
+  .home:focus-visible {
+    outline: 1px solid var(--text);
+    outline-offset: 0.1875rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .checker {
+      animation: none;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="checker" aria-hidden="true"></div>
+<main class="panel">
+  <h1 class="code">404</h1>
+  <p class="msg" data-ko="찾으시는 페이지가 없습니다." data-en="This page could not be found.">찾으시는 페이지가 없습니다.</p>
+  <p class="sub" data-ko="주소가 바뀌었거나 잘못 입력되었을 수 있습니다." data-en="The address may have changed or been typed incorrectly.">주소가 바뀌었거나 잘못 입력되었을 수 있습니다.</p>
+  <a class="home" href="/" data-ko="APEX SANS 홈으로" data-en="Back to APEX SANS">APEX SANS 홈으로</a>
+</main>
+<script>
+  (function () {
+    var lang = "ko";
+    try {
+      if (localStorage.getItem("site-lang") === "en") lang = "en";
+    } catch (e) {}
+    if (lang !== "en") return;
+    document.documentElement.lang = "en";
+    document.documentElement.setAttribute("data-lang", "en");
+    var els = document.querySelectorAll("[data-ko][data-en]");
+    for (var i = 0; i < els.length; i++) els[i].textContent = els[i].getAttribute("data-en");
+  })();
+</script>
+</body>
+</html>
