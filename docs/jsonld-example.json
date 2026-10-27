@@ -12,9 +12,10 @@
     {
       "@type": "Person",
       "@id": "https://apexsans.com/#site-designer",
-      "name": "Park Jeong Gyeon",
+      "name": "박정견",
       "jobTitle": "Web designer",
-      "url": "https://apexsans.com/#Credit"
+      "url": "https://apexsans.com/#Credit",
+      "alternateName": "Park Jeong Gyeon"
     },
     {
       "@type": "CreativeWork",
