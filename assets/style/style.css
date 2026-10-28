@@ -1853,6 +1853,12 @@ main .specimen__heading {
   pointer-events: auto;
 }
 
+.site-footer__totop.is-pinned.is-over-flip .footer-btn {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .site-footer__totop.is-pinned .footer-btn:hover {
   mix-blend-mode: normal;
 }
@@ -3439,6 +3445,10 @@ input[type="range"]::-moz-range-track {
 
 .site-footer__license-steps {
   row-gap: 1rem;
+}
+
+.site-footer__license-steps--price {
+  row-gap: 0.5rem;
 }
 
 .site-footer__license-map {

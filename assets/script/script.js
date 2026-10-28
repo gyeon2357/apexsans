@@ -3229,6 +3229,12 @@ function initToTopPin() {
     var top = entries[entries.length - 1].boundingClientRect.top;
     wrap.classList.toggle("is-pinned", top < window.innerHeight);
   }, { threshold: 0 }).observe(credit);
+
+  var flip = document.querySelector(".site-footer__flip");
+  if (!flip) return;
+  new window.IntersectionObserver(function (entries) {
+    wrap.classList.toggle("is-over-flip", entries[entries.length - 1].isIntersecting);
+  }, { rootMargin: "0px 0px -56px 0px", threshold: 0 }).observe(flip);
 }
 
 function initDesignerOverlay() {
