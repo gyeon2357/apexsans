@@ -1383,10 +1383,9 @@ body.intro-lock .main-screen {
 .stack__cta:hover,
 .stack__cta:active,
 .stack__cta:focus-visible {
-  --cta-fill: color-mix(in oklab, var(--blend-fg) 22%, transparent);
   outline: none;
   color: var(--blend-fg);
-  background: linear-gradient(var(--cta-fill), var(--cta-fill)) center / 100% calc(100% - 0.5rem) no-repeat;
+  background: none;
 }
 
 [data-theme="red"] .stack__cta {
@@ -1396,9 +1395,10 @@ body.intro-lock .main-screen {
 [data-theme="red"] .stack__cta:hover,
 [data-theme="red"] .stack__cta:active,
 [data-theme="red"] .stack__cta:focus-visible {
-  --cta-fill: var(--fill-hover);
   color: var(--text);
-  background: linear-gradient(var(--cta-fill), var(--cta-fill)) center / 100% calc(100% - 0.5rem) no-repeat;
+  background: none;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
 }
 
 .stack__cta:focus-visible {
@@ -3586,6 +3586,21 @@ input[type="range"]::-moz-range-track {
     grid-template-columns: 1fr;
   }
 
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  .tester__toolbar {
+    align-items: flex-end;
+  }
+
+  .tester__toolbar-controls {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .tester__control {
+    flex: 0 0 100%;
+  }
 }
 
 @media (max-width: 640px) {
