@@ -3189,7 +3189,7 @@ function initDesignerOverlay() {
   const backBtn = document.getElementById("designersBack");
   if (!overlay || !backBtn) return;
 
-  const HASHES = ["font-designer", "site-designer"];
+  const HASHES = ["font-designer", "site-designer", "designers"];
   const CLOSE_MS = 260;
   let opener = null;
   let pushed = false;
@@ -3269,6 +3269,11 @@ function initDesignerOverlay() {
   });
 
   backBtn.addEventListener("click", close);
+
+  overlay.addEventListener("click", (e) => {
+    if (e.target.closest(".designer__role, .designer__name, .designer__bio, .designer__link, .designers__back")) return;
+    close();
+  });
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && isOpen()) {

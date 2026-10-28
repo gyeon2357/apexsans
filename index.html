@@ -57,21 +57,33 @@
       "@id": "https://apexsans.com/#website",
       "url": "https://apexsans.com/",
       "name": "APEX SANS",
-      "inLanguage": ["ko", "en"]
+      "inLanguage": ["ko", "en"],
+      "creator": { "@id": "https://apexsans.com/#site-designer" }
     },
     {
       "@type": "Person",
-      "@id": "https://apexsans.com/#designer",
+      "@id": "https://apexsans.com/#font-designer",
       "name": "박창규",
-      "jobTitle": "Type designer"
+      "alternateName": "Park Chang Gyu",
+      "jobTitle": "Type designer",
+      "url": "https://apexsans.com/#font-designer"
     },
+    {
+      "@type": "Person",
+      "@id": "https://apexsans.com/#site-designer",
+      "name": "박정견",
+      "alternateName": "Park Jeong Gyeon",
+      "jobTitle": "Web designer",
+      "url": "https://apexsans.com/#site-designer"
+    },
+
     {
       "@type": "CreativeWork",
       "@id": "https://apexsans.com/#typeface",
       "name": "APEX SANS",
       "alternateName": ["에이펙스 산스", "Apex Sans"],
       "genre": "Typeface",
-      "creator": { "@id": "https://apexsans.com/#designer" },
+      "creator": { "@id": "https://apexsans.com/#font-designer" },
       "isPartOf": { "@id": "https://apexsans.com/#website" },
       "datePublished": "2026-08",
       "inLanguage": ["ko", "en"],
@@ -815,7 +827,7 @@ body.probe-intro .probe__hint { opacity: 1; visibility: visible; }</style></nosc
         </div>
         <div>
           <dt data-ko="사이트 디자이너" data-en="Site designer">사이트 디자이너</dt>
-          <dd><span data-ko="박정견" data-en="Park Jeong Gyeon">박정견</span><button type="button" class="designer-link" data-designer="site-designer" data-ko="소개" data-en="About" aria-haspopup="dialog">소개</button></dd>
+          <dd><span data-ko="박정견" data-en="Park Jeong Gyeon">박정견</span></dd>
         </div>
         <div>
           <dt data-ko="사용권장 OS" data-en="Recommended OS">사용권장 OS</dt>
@@ -1059,8 +1071,16 @@ body.probe-intro .probe__hint { opacity: 1; visibility: visible; }</style></nosc
 
       <div class="site-footer__bottom">
         <div class="site-footer__bottom-inner">
-          <span class="site-footer__copyright"><button type="button" class="designer-trigger" data-designer="font-designer" aria-haspopup="dialog">&copy; <span id="copyrightYear">2026</span> Park Chang Gyu</button>. All rights reserved.</span>
-          <button type="button" class="site-footer__credit designer-trigger" data-designer="site-designer" aria-haspopup="dialog">Site by Park Jeong Gyeon</button>
+          <button type="button" class="footer-link site-footer__about" data-designer="designers" aria-haspopup="dialog">About</button>
+          <span class="site-footer__copyright">&copy; <span id="copyrightYear">2026</span> Park Chang Gyu. All rights reserved.</span>
+          <a
+            class="site-footer__credit"
+            href="https://noeyg.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-ko="Site by Park Jeong Gyeon"
+            data-en="Site by Park Jeong Gyeon"
+          >Site by Park Jeong Gyeon</a>
         </div>
       </div>
     </div>
@@ -1077,7 +1097,7 @@ body.probe-intro .probe__hint { opacity: 1; visibility: visible; }</style></nosc
 
   <div class="designers" id="designerOverlay" role="dialog" aria-modal="true" aria-labelledby="designersTitle" data-lenis-prevent hidden>
     <div class="designers__bar">
-      <button type="button" class="footer-link designers__back" id="designersBack" data-ko="Back" data-en="Back">Back</button>
+      <button type="button" class="designers__back" id="designersBack" data-ko="Back" data-en="Back">Back</button>
     </div>
     <h2 class="visually-hidden" id="designersTitle" data-ko="디자이너 소개" data-en="About the designers">디자이너 소개</h2>
     <div class="designers__grid">
