@@ -875,22 +875,69 @@ function initTypeTester() {
       input.dispatchEvent(new Event("input", { bubbles: true }));
     }
 
-    input.addEventListener(
+    const SCROLL_QUIET_MS = 150;
+    const TOUCH_SLOP = 8;
+    const TAP_MS = 300;
+    const HIT_PAD = 14;
+    const touchHost = input.closest(".tester__control") || input.parentElement;
+    let lastScrollAt = 0;
+    let gesture = null;
+
+    window.addEventListener("scroll", () => { lastScrollAt = performance.now(); }, { passive: true });
+
+    function onGauge(t) {
+      const r = input.getBoundingClientRect();
+      return t.clientX >= r.left && t.clientX <= r.right && t.clientY >= r.top - HIT_PAD && t.clientY <= r.bottom + HIT_PAD;
+    }
+
+    touchHost.addEventListener(
       "touchstart",
       (e) => {
-        if (!e.touches || !e.touches.length) return;
-        setValueFromTouchX(e.touches[0].clientX);
+        gesture = null;
+        if (!e.touches || e.touches.length !== 1 || !onGauge(e.touches[0])) return;
+        const t = e.touches[0];
+        const now = performance.now();
+        gesture = {
+          x: t.clientX,
+          y: t.clientY,
+          at: now,
+          scrollY: window.scrollY,
+          mode: now - lastScrollAt < SCROLL_QUIET_MS ? "ignore" : "pending",
+        };
       },
       { passive: true }
     );
-    input.addEventListener(
+    touchHost.addEventListener(
       "touchmove",
       (e) => {
-        if (!e.touches || !e.touches.length) return;
-        setValueFromTouchX(e.touches[0].clientX);
+        if (!gesture || !e.touches || !e.touches.length) return;
+        if (gesture.mode === "ignore" || gesture.mode === "scroll") return;
+        const t = e.touches[0];
+        if (gesture.mode === "pending") {
+          const dx = Math.abs(t.clientX - gesture.x);
+          const dy = Math.abs(t.clientY - gesture.y);
+          if (dx < TOUCH_SLOP && dy < TOUCH_SLOP) return;
+          gesture.mode = dx > dy ? "drag" : "scroll";
+          if (gesture.mode === "scroll") return;
+        }
+        setValueFromTouchX(t.clientX);
       },
       { passive: true }
     );
+    touchHost.addEventListener(
+      "touchend",
+      (e) => {
+        const g = gesture;
+        gesture = null;
+        if (!g || g.mode !== "pending") return;
+        if (performance.now() - g.at > TAP_MS) return;
+        if (Math.abs(window.scrollY - g.scrollY) > 2) return;
+        const t = e.changedTouches && e.changedTouches[0];
+        setValueFromTouchX(t ? t.clientX : g.x);
+      },
+      { passive: true }
+    );
+    touchHost.addEventListener("touchcancel", () => { gesture = null; }, { passive: true });
 
     if (output) {
       function startEdit() {

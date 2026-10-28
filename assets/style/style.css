@@ -2071,8 +2071,17 @@ main .specimen__heading {
   flex: 1 1 auto;
   width: auto;
   min-width: 5rem;
-  touch-action: none;
   transition: filter var(--t-hover);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .tester__control {
+    touch-action: pan-y;
+  }
+
+  .tester__control input[type="range"] {
+    pointer-events: none;
+  }
 }
 
 .tester__control-value {
@@ -2416,6 +2425,10 @@ main .specimen__heading {
   max-height: 150vh;
   overflow: hidden;
   position: relative;
+}
+
+.tester__preview:focus {
+  overflow-y: auto;
 }
 
 .tester__preview[lang="ko"] {
@@ -3834,7 +3847,7 @@ input[type="range"]::-moz-range-track {
     font-size: 1.375rem;
     column-gap: 1rem;
     max-height: 75vh;
-    overflow-y: auto;
+    overflow-y: hidden;
     padding-block: 0.75rem;
   }
 
