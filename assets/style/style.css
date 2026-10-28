@@ -5023,6 +5023,10 @@ html.lenis body {
   overflow-wrap: anywhere;
 }
 
+.designer__bio:empty {
+  display: none;
+}
+
 .designer__link {
   display: inline-block;
   margin-top: 1rem;
