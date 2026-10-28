@@ -3323,6 +3323,15 @@ function initDesignerOverlay() {
 
   backBtn.addEventListener("click", close);
 
+  const logoLink = document.querySelector(".site-header__logo-link");
+  if (logoLink) {
+    logoLink.addEventListener("click", () => {
+      if (!isOpen()) return;
+      close();
+      window.setTimeout(() => scrollPageTo(0, { immediate: true }), CLOSE_MS + 60);
+    });
+  }
+
   overlay.addEventListener("click", (e) => {
     if (e.target.closest(".designer__role, .designer__name, .designer__bio, .designer__link, .designers__back")) return;
     close();
