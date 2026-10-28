@@ -1863,8 +1863,7 @@ main .specimen__heading {
 
 .jump-link,
 .footer-btn,
-.opentype__tab,
-.footer-link {
+.opentype__tab {
   --bracket-w: 1px;
   --bracket-color: var(--border-strong);
   padding: var(--bracket-pad-y) var(--bracket-pad-x);
@@ -1879,10 +1878,8 @@ main .specimen__heading {
 .footer-btn:hover,
 .footer-btn:focus-visible,
 .opentype__tab:hover,
-.opentype__tab:focus-visible,
-.footer-link:hover,
-.footer-link:focus-visible {
-  --bracket-color: var(--on-accent);
+.opentype__tab:focus-visible {
+  --bracket-color: var(--accent-hi);
   background-color: var(--accent-hi);
   color: var(--on-accent);
 }
@@ -1893,17 +1890,13 @@ main .specimen__heading {
 [data-theme="red"] .footer-btn:focus-visible,
 [data-theme="red"] .opentype__tab:hover,
 [data-theme="red"] .opentype__tab:focus-visible,
-[data-theme="red"] .footer-link:hover,
-[data-theme="red"] .footer-link:focus-visible,
 [data-theme="light"] .jump-link:hover,
 [data-theme="light"] .jump-link:focus-visible,
 [data-theme="light"] .footer-btn:hover,
 [data-theme="light"] .footer-btn:focus-visible,
 [data-theme="light"] .opentype__tab:hover,
-[data-theme="light"] .opentype__tab:focus-visible,
-[data-theme="light"] .footer-link:hover,
-[data-theme="light"] .footer-link:focus-visible {
-  --bracket-color: var(--on-accent);
+[data-theme="light"] .opentype__tab:focus-visible {
+  --bracket-color: var(--accent);
   background-color: var(--accent);
   color: var(--on-accent);
 }
@@ -1912,6 +1905,15 @@ main .specimen__heading {
   --bracket-color: var(--text);
   background-color: var(--text);
   color: var(--bg);
+}
+
+.site-footer__cta-links .footer-link {
+  padding-inline: 0;
+}
+
+.site-footer__cta-links .footer-link:hover,
+.site-footer__cta-links .footer-link:focus-visible {
+  box-shadow: 0 0 0 0.25rem var(--fill-hover);
 }
 
 .site-footer__contact {
@@ -2179,6 +2181,8 @@ main .specimen__heading {
 .tester__ot-info:focus-visible,
 .tester__ot-info[aria-expanded="true"] {
   opacity: 1;
+  background: none;
+  color: var(--text);
 }
 
 .tester__ot-note {
@@ -3297,7 +3301,7 @@ input[type="range"]::-moz-range-track {
 .site-footer__cta-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 1rem;
   --btn-font: var(--footer-aux-font);
   font-size: var(--footer-aux-font);
 }
@@ -5014,4 +5018,14 @@ body.designers-open .page-line {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
+}
+
+html[data-lang="ko"] .site-footer__info .tester__ot-info {
+  top: 0.125rem;
+}
+
+.site-footer__bottom-inner .site-footer__about:hover,
+.site-footer__bottom-inner .site-footer__about:focus-visible {
+  background-color: var(--fill-hover);
+  box-shadow: 0 0 0 0.25rem var(--fill-hover);
 }
