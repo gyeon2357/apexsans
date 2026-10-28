@@ -1383,9 +1383,10 @@ body.intro-lock .main-screen {
 .stack__cta:hover,
 .stack__cta:active,
 .stack__cta:focus-visible {
+  --cta-fill: color-mix(in oklab, var(--blend-fg) 22%, transparent);
   outline: none;
   color: var(--blend-fg);
-  background: color-mix(in oklab, var(--blend-fg) 22%, transparent);
+  background: linear-gradient(var(--cta-fill), var(--cta-fill)) center / 100% calc(100% - 0.5rem) no-repeat;
 }
 
 [data-theme="red"] .stack__cta {
@@ -1395,8 +1396,9 @@ body.intro-lock .main-screen {
 [data-theme="red"] .stack__cta:hover,
 [data-theme="red"] .stack__cta:active,
 [data-theme="red"] .stack__cta:focus-visible {
+  --cta-fill: var(--fill-hover);
   color: var(--text);
-  background: var(--fill-hover);
+  background: linear-gradient(var(--cta-fill), var(--cta-fill)) center / 100% calc(100% - 0.5rem) no-repeat;
 }
 
 .stack__cta:focus-visible {
@@ -1907,6 +1909,13 @@ main .specimen__heading {
   color: var(--bg);
 }
 
+[data-theme="red"] .site-footer__buy .footer-btn:hover,
+[data-theme="red"] .site-footer__buy .footer-btn:focus-visible {
+  --bracket-color: var(--text);
+  background-color: transparent;
+  color: var(--text);
+}
+
 .site-footer__contact {
   display: flex;
   flex-direction: column;
@@ -2239,6 +2248,21 @@ main .specimen__heading {
   align-items: center;
   min-height: var(--gauge-row-h);
   gap: 0.25rem;
+}
+
+@media (min-width: 901px) and (max-width: 1278px) {
+  .tester__toolbar {
+    align-items: flex-end;
+  }
+
+  .tester__control {
+    flex-basis: 18rem;
+  }
+
+  .tester__ot,
+  .tester__toolbar-actions {
+    min-height: 1.75rem;
+  }
 }
 
 @media (min-width: 1600px) {
@@ -3310,7 +3334,7 @@ input[type="range"]::-moz-range-track {
   padding-top: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .site-footer__block-title {
