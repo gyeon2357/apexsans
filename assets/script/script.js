@@ -3184,6 +3184,129 @@ function initToTopPin() {
   }, { threshold: 0 }).observe(credit);
 }
 
+function initDesignerOverlay() {
+  const overlay = document.getElementById("designerOverlay");
+  const backBtn = document.getElementById("designersBack");
+  if (!overlay || !backBtn) return;
+
+  const HASHES = ["font-designer", "site-designer"];
+  const CLOSE_MS = 260;
+  let opener = null;
+  let pushed = false;
+  let inerted = [];
+  let closeTimer = 0;
+
+  const isOpen = () => !overlay.hidden && overlay.classList.contains("is-open");
+  const hashKey = () => {
+    const h = window.location.hash.replace(/^#/, "");
+    return HASHES.indexOf(h) >= 0 ? h : "";
+  };
+
+  function setInert(on) {
+    if (on) {
+      inerted = Array.prototype.filter.call(document.body.children, (el) => {
+        const tag = el.tagName;
+        return el !== overlay && !el.classList.contains("site-header") && tag !== "SCRIPT" && tag !== "STYLE" && tag !== "NOSCRIPT" && !el.inert;
+      });
+      inerted.forEach((el) => { el.inert = true; });
+    } else {
+      inerted.forEach((el) => { el.inert = false; });
+      inerted = [];
+    }
+  }
+
+  function show(key) {
+    window.clearTimeout(closeTimer);
+    overlay.hidden = false;
+    setInert(true);
+    lockPageScroll(true, "designers-open");
+    overlay.scrollTop = 0;
+    window.requestAnimationFrame(() => {
+      overlay.classList.add("is-open");
+      const target = overlay.querySelector('.designer[data-designer="' + key + '"]');
+      if (target && window.matchMedia("(max-width: 760px)").matches) {
+        overlay.scrollTop = Math.max(0, target.offsetTop - backBtn.parentElement.offsetHeight);
+      }
+      backBtn.focus({ preventScroll: true });
+    });
+  }
+
+  function hide() {
+    if (overlay.hidden) return;
+    overlay.classList.remove("is-open");
+    setInert(false);
+    lockPageScroll(false, "designers-open");
+    closeTimer = window.setTimeout(() => { overlay.hidden = true; }, CLOSE_MS);
+    if (opener && document.contains(opener)) opener.focus({ preventScroll: true });
+    opener = null;
+  }
+
+  function open(key, trigger) {
+    if (isOpen()) return;
+    opener = trigger || document.activeElement;
+    if (hashKey() !== key) {
+      window.history.pushState({ designers: key }, "", "#" + key);
+      pushed = true;
+    }
+    show(key);
+  }
+
+  function close() {
+    if (pushed) {
+      pushed = false;
+      window.history.back();
+      return;
+    }
+    if (hashKey()) {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+    hide();
+  }
+
+  document.querySelectorAll("[data-designer]").forEach((el) => {
+    if (overlay.contains(el)) return;
+    el.addEventListener("click", () => open(el.dataset.designer, el));
+  });
+
+  backBtn.addEventListener("click", close);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && isOpen()) {
+      e.preventDefault();
+      close();
+    }
+  });
+
+  window.addEventListener("popstate", () => {
+    const key = hashKey();
+    if (key && !isOpen()) {
+      show(key);
+    } else if (!key && isOpen()) {
+      pushed = false;
+      hide();
+    }
+  });
+
+  function openFromHash() {
+    const key = hashKey();
+    if (key && !isOpen()) show(key);
+  }
+
+  if (hashKey()) {
+    if (!document.body.classList.contains("probe-intro")) {
+      openFromHash();
+    } else {
+      const watch = new MutationObserver(() => {
+        if (!document.body.classList.contains("probe-intro")) {
+          watch.disconnect();
+          openFromHash();
+        }
+      });
+      watch.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    }
+  }
+}
+
 function initSectionNav() {
   const nav = document.getElementById("sectionNav");
   if (!nav) return;
@@ -3908,6 +4031,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initSectionNavAlign();
   initStackBuyCta();
   initToTopPin();
+  initDesignerOverlay();
   initShareButton();
   initMailCopyButton();
   initUseCasesCarousel();
