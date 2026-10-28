@@ -3225,7 +3225,7 @@ function initDesignerOverlay() {
       overlay.classList.add("is-open");
       const target = overlay.querySelector('.designer[data-designer="' + key + '"]');
       if (target && window.matchMedia("(max-width: 760px)").matches) {
-        overlay.scrollTop = Math.max(0, target.offsetTop - backBtn.parentElement.offsetHeight);
+        overlay.scrollTop = Math.max(0, target.offsetTop - 64);
       }
       backBtn.focus({ preventScroll: true });
     });
