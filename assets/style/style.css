@@ -191,7 +191,8 @@ html {
 
 @media (max-width: 640px) {
   html {
-    font-size: calc(16px * var(--mobile-type-scale, 1.25));
+    --mobile-type-scale: 1.25;
+    font-size: calc(16px * var(--mobile-type-scale));
   }
 }
 
@@ -2861,6 +2862,12 @@ input[type="range"]::-moz-range-track {
   transition: background-color var(--t-hover), color var(--t-hover);
 }
 
+@media (max-width: 640px) {
+  .glyph-cell {
+    font-size: clamp(calc(1.25rem / var(--mobile-type-scale, 1)), 4cqi, 5rem);
+  }
+}
+
 .glyph-cell:nth-child(odd) {
   background-color: var(--panel-bg);
   color: oklch(var(--panel-fg));
@@ -3739,7 +3746,7 @@ input[type="range"]::-moz-range-track {
   }
 
   .slide__text {
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem / var(--mobile-type-scale, 1));
   }
 
   .jump-link,
