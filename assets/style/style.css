@@ -3110,6 +3110,7 @@ input[type="range"]::-moz-range-track {
 .use-cases__viewport {
   position: relative;
   overflow: hidden;
+  touch-action: pan-y;
 }
 
 .use-cases__nav {

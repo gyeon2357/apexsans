@@ -3986,7 +3986,9 @@ function initUseCasesCarousel() {
   let touchStartX = 0;
   let touchStartY = 0;
   let touching = false;
+  let swipeAxis = "";
   let swipeGuardUntil = 0;
+  const AXIS_SLOP = 8;
 
   const swipeTarget = viewport || row;
 
@@ -3997,6 +3999,7 @@ function initUseCasesCarousel() {
       touchStartX = t.clientX;
       touchStartY = t.clientY;
       touching = true;
+      swipeAxis = "";
       row.style.transition = "none";
     },
     { passive: true }
@@ -4009,11 +4012,21 @@ function initUseCasesCarousel() {
       const t = e.touches[0];
       const dx = t.clientX - touchStartX;
       const dy = t.clientY - touchStartY;
-      if (Math.abs(dy) > Math.abs(dx)) return;
+      if (!swipeAxis) {
+        if (Math.abs(dx) < AXIS_SLOP && Math.abs(dy) < AXIS_SLOP) return;
+        swipeAxis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+        if (swipeAxis === "y") {
+          touching = false;
+          row.style.transition = "";
+          render();
+          return;
+        }
+      }
+      if (e.cancelable) e.preventDefault();
       const percent = (dx / row.clientWidth) * 100;
       row.style.transform = `translateX(calc(-${(index * 100) / perView}% + ${percent}%))`;
     },
-    { passive: true }
+    { passive: false }
   );
 
   swipeTarget.addEventListener("touchend", (e) => {
@@ -4023,7 +4036,7 @@ function initUseCasesCarousel() {
     const t = e.changedTouches[0];
     const dx = t.clientX - touchStartX;
     const SWIPE_THRESHOLD = 40;
-    if (Math.abs(dx) > SWIPE_THRESHOLD) {
+    if (swipeAxis === "x" && Math.abs(dx) > SWIPE_THRESHOLD) {
       swipeGuardUntil = Date.now() + 400;
       goTo(index + (dx < 0 ? 1 : -1), true);
     } else {
