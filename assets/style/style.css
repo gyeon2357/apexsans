@@ -183,6 +183,7 @@
 /* == Typography & units ================================ */
 
 html {
+  --credit-indent: 1rem;
   font-size: 16px;
   scrollbar-width: thin;
   scrollbar-color: var(--text-faint) transparent;
@@ -191,6 +192,7 @@ html {
 
 @media (max-width: 640px) {
   html {
+    --credit-indent: 0.5rem;
     --mobile-type-scale: 1.125;
     font-size: calc(16px * var(--mobile-type-scale));
   }
@@ -1942,7 +1944,7 @@ main .specimen__heading {
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  padding-inline-start: max(0rem, calc(1rem - var(--btn-pad-x)));
+  padding-inline-start: max(0rem, calc(var(--credit-indent) - var(--btn-pad-x)));
 }
 
 .site-footer__contact .site-footer__cta-mail {
@@ -3438,7 +3440,7 @@ input[type="range"]::-moz-range-track {
 }
 
 .site-footer__license-group > :not(.site-footer__license-title) {
-  margin-inline-start: 1rem;
+  margin-inline-start: var(--credit-indent);
 }
 
 .site-footer__license-sublist {
@@ -4875,7 +4877,7 @@ html[data-debug] .stack[data-stack="sticky"][data-sticky-ok="no"]::before {
 
 @media (max-width: 640px) {
   .section-nav {
-    left: var(--section-nav-mid, calc(50% + 4rem));
+    left: calc(var(--section-nav-mid, 50%) + 0.5rem);
   }
 }
 
