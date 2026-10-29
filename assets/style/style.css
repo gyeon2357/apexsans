@@ -191,7 +191,7 @@ html {
 
 @media (max-width: 640px) {
   html {
-    --mobile-type-scale: 1.25;
+    --mobile-type-scale: 1.125;
     font-size: calc(16px * var(--mobile-type-scale));
   }
 }
