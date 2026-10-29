@@ -3202,11 +3202,19 @@ function initSectionNavAlign() {
     document.documentElement.style.setProperty(
       "--section-nav-left", Math.round(box.left) + "px"
     );
+    var logo = document.querySelector(".site-header__logo");
+    var tools = document.querySelector(".site-header__nav");
+    if (logo && tools) {
+      var mid = (logo.getBoundingClientRect().right + tools.getBoundingClientRect().left) / 2;
+      document.documentElement.style.setProperty("--section-nav-mid", Math.round(mid) + "px");
+    }
   }
 
   apply();
   window.addEventListener("resize", apply);
+  window.addEventListener("load", apply);
   document.addEventListener("intro:done", apply);
+  document.addEventListener("apex:langchange", apply);
 }
 
 function initStackBuyCta() {

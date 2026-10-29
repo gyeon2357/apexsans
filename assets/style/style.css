@@ -189,6 +189,12 @@ html {
   background: var(--bg);
 }
 
+@media (max-width: 640px) {
+  html {
+    font-size: calc(16px * var(--mobile-type-scale, 1.25));
+  }
+}
+
 html.theme-switching *,
 html.theme-switching *::before,
 html.theme-switching *::after {
@@ -4858,6 +4864,12 @@ html[data-debug] .stack[data-stack="sticky"][data-sticky-ok="no"]::before {
     transform: translate(-50%, -50%);
   }
 
+}
+
+@media (max-width: 640px) {
+  .section-nav {
+    left: var(--section-nav-mid, calc(50% + 4rem));
+  }
 }
 
 .specimen__intro,
