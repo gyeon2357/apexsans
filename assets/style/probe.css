@@ -205,12 +205,6 @@ body.probe-intro .page-line {
 
 /* == end Idle drift ==================================== */
 
-@media (prefers-reduced-motion: reduce) {
-  .probe.is-live {
-    animation: none;
-  }
-}
-
 .probe.is-locked {
   pointer-events: none;
 }

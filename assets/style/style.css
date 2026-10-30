@@ -4009,6 +4009,14 @@ input[type="range"]::-moz-range-track {
     padding-bottom: 0.5rem;
   }
 
+  .site-footer__license-steps--price {
+    line-height: 1.35;
+  }
+
+  .site-footer__license-steps--price > div {
+    gap: 0;
+  }
+
   .site-footer__block {
     gap: 1rem;
     padding-top: 0.5rem;
@@ -4194,9 +4202,9 @@ body.keep-header.main-screen-visible .site-header {
 
 @media (prefers-reduced-motion: reduce) {
 
-  *,
-  *::before,
-  *::after {
+  *:not(.main-screen-track):not(.main-screen-track *):not(.page-line):not(.page-line *):not(.site-header):not(.site-header *),
+  *:not(.main-screen-track):not(.main-screen-track *):not(.page-line):not(.page-line *):not(.site-header):not(.site-header *)::before,
+  *:not(.main-screen-track):not(.main-screen-track *):not(.page-line):not(.page-line *):not(.site-header):not(.site-header *)::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;

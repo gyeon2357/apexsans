@@ -35,7 +35,7 @@ function syncHeaderHeight() {
   if (!header) return;
   const h = header.getBoundingClientRect().height;
   if (h > 0) {
-    document.documentElement.style.setProperty("--header-h", `${Math.round(h)}px`);
+    document.documentElement.style.setProperty("--header-h", `${Math.floor(h)}px`);
   }
 }
 syncHeaderHeight();
