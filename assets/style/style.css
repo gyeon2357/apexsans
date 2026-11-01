@@ -5129,7 +5129,9 @@ body.designers-open .page-line {
 }
 
 .site-footer__info .tester__ot-info {
-  top: 0.125rem;
+  height: auto;
+  vertical-align: middle;
+  line-height: 0;
 }
 
 .site-footer__bottom-inner .site-footer__about:hover,
