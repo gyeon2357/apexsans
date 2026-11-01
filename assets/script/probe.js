@@ -870,6 +870,25 @@
 
   let skipIntro = null;
 
+  function initDoubleTapSkip() {
+    const DOUBLE_TAP_MS = 350;
+    const DOUBLE_TAP_SLOP = 40;
+    let last = null;
+    document.addEventListener("touchend", (e) => {
+      if (!skipIntro) { last = null; return; }
+      const t = e.changedTouches && e.changedTouches[0];
+      if (!t) return;
+      const now = performance.now();
+      if (last && now - last.at < DOUBLE_TAP_MS &&
+          Math.hypot(t.clientX - last.x, t.clientY - last.y) < DOUBLE_TAP_SLOP) {
+        last = null;
+        skipIntro();
+        return;
+      }
+      last = { at: now, x: t.clientX, y: t.clientY };
+    }, { passive: true });
+  }
+
   function initEscape() {
     document.addEventListener("keydown", (e) => {
       if (e.key !== "Escape" || e.defaultPrevented) return;
@@ -895,6 +914,7 @@
   }
   runIntro();
   initEscape();
+  initDoubleTapSkip();
   watchPast();
   initGlyphCycle();
   initPageLine();
