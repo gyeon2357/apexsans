@@ -58,13 +58,13 @@
 
     play((instant) => {
       if (instant) { full.style.opacity = "1"; paths.forEach((p) => p.remove()); return; }
-      const TOTAL = 3600;
-      const GAP = 40;
+      const TOTAL = 1800;
+      const GAP = 15;
       const sum = lens.reduce((a, b) => a + b, 0);
       const perUnit = (TOTAL - GAP * (lens.length - 1)) / sum;
       let t = 0;
       paths.forEach((p, i) => {
-        const dur = Math.max(80, lens[i] * perUnit);
+        const dur = Math.max(16, lens[i] * perUnit);
         p.animate([{ strokeDashoffset: lens[i] }, { strokeDashoffset: 0 }],
           { duration: dur, delay: t, easing: "cubic-bezier(0.45, 0, 0.55, 1)", fill: "forwards" });
         t += dur + GAP;
