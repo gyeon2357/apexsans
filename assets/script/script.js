@@ -3968,10 +3968,20 @@ function initUseCasesCarousel() {
     }, WRAP_FADE_MS);
   }
 
+  function jumpToIndex(nextIndex) {
+    row.style.transition = "none";
+    index = nextIndex;
+    render();
+    void row.offsetWidth;
+    row.style.transition = "";
+  }
+
   function goTo(i, userInitiated) {
     const nextIndex = ((i % pages) + pages) % pages;
     const wrapping = index === pages - 1 && nextIndex === 0 && pages > 1;
-    if (isWide() || wrapping) {
+    if (isWide()) {
+      jumpToIndex(nextIndex);
+    } else if (wrapping) {
       fadeToIndex(nextIndex);
     } else {
       index = nextIndex;
