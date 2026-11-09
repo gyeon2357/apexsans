@@ -2073,9 +2073,37 @@ function initCapPromo() {
   const consent = document.getElementById("consentBanner");
   let wanted = false;
   let closed = false;
-  const sync = () => {
-    promo.hidden = closed || !wanted || !!(consent && !consent.hidden);
-  };
+  let inGoods = false;
+  let hideTimer = null;
+
+  // 쿠키 안내와 겹치면(모바일) 숨기지 않고 그 위로 올린다.
+  function lift() {
+    let px = 0;
+    if (consent && !consent.hidden && !promo.hidden) {
+      const c = consent.getBoundingClientRect();
+      const p = promo.getBoundingClientRect();
+      if (c.left < p.right && c.right > p.left) px = Math.ceil(c.height) + 8;
+    }
+    promo.style.setProperty("--promo-lift", px + "px");
+  }
+
+  function sync() {
+    const show = !closed && wanted && !inGoods;
+    if (show) {
+      window.clearTimeout(hideTimer);
+      hideTimer = null;
+      promo.classList.remove("is-leaving");
+      promo.hidden = false;
+    } else if (!promo.hidden && !hideTimer) {
+      promo.classList.add("is-leaving");
+      hideTimer = window.setTimeout(() => {
+        hideTimer = null;
+        promo.hidden = true;
+        promo.classList.remove("is-leaving");
+      }, 400);
+    }
+    lift();
+  }
 
   // 슬라이드를 다 본 뒤 — 슬라이드 다음 구간(Glyphs)이 화면에 들어오면 띄운다.
   const after = document.getElementById("Glyphs");
@@ -2093,9 +2121,22 @@ function initCapPromo() {
     arm();
   }
 
-  if (consent) {
-    new MutationObserver(sync).observe(consent, { attributes: true, attributeFilter: ["hidden"] });
+  // 굿즈 슬라이드가 화면 가운데에 오면 비켜 준다(닫은 것으로 치지 않는다).
+  const goods = document.getElementById("UseCases");
+  if (goods && "IntersectionObserver" in window) {
+    new IntersectionObserver(
+      (entries) => {
+        inGoods = entries[entries.length - 1].isIntersecting;
+        sync();
+      },
+      { rootMargin: "-35% 0px -35% 0px" }
+    ).observe(goods);
   }
+
+  if (consent) {
+    new MutationObserver(lift).observe(consent, { attributes: true, attributeFilter: ["hidden"] });
+  }
+  window.addEventListener("resize", lift, { passive: true });
 
   function dismiss() {
     if (closed) return;
@@ -2103,8 +2144,7 @@ function initCapPromo() {
     try {
       localStorage.setItem(CAP_PROMO_KEY, "1");
     } catch (e) {}
-    promo.classList.add("is-leaving");
-    window.setTimeout(sync, 400);
+    sync();
   }
   if (closeBtn) closeBtn.addEventListener("click", dismiss);
   const cta = document.getElementById("capPromoCta");
