@@ -1659,8 +1659,8 @@ body.intro-lock .main-screen {
   width: 100%;
   height: auto;
   aspect-ratio: 16 / 10;
-  object-fit: cover;
-  background: var(--bg-alt);
+  object-fit: contain;
+  background: #fefefe;
 }
 
 .use-cases__item .placeholder-media {
