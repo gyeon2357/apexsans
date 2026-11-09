@@ -2059,6 +2059,54 @@ function snoozeConsent() {
   } catch (e) {}
 }
 
+const CAP_PROMO_KEY = "apex-cap-promo-closed";
+const CAP_PROMO_DELAY_MS = 1500;
+
+function initCapPromo() {
+  const promo = document.getElementById("capPromo");
+  const closeBtn = document.getElementById("capPromoClose");
+  if (!promo) return;
+  try {
+    if (localStorage.getItem(CAP_PROMO_KEY) === "1") return;
+  } catch (e) {}
+
+  const consent = document.getElementById("consentBanner");
+  let wanted = false;
+  let closed = false;
+  const sync = () => {
+    promo.hidden = closed || !wanted || !!(consent && !consent.hidden);
+  };
+
+  function arm() {
+    window.setTimeout(() => { wanted = true; sync(); }, CAP_PROMO_DELAY_MS);
+  }
+  if (document.body.classList.contains("probe-intro")) {
+    const watch = new MutationObserver(() => {
+      if (document.body.classList.contains("probe-intro")) return;
+      watch.disconnect();
+      arm();
+    });
+    watch.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+  } else {
+    arm();
+  }
+
+  if (consent) {
+    new MutationObserver(sync).observe(consent, { attributes: true, attributeFilter: ["hidden"] });
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      closed = true;
+      try {
+        localStorage.setItem(CAP_PROMO_KEY, "1");
+      } catch (e) {}
+      promo.classList.add("is-leaving");
+      window.setTimeout(sync, 400);
+    });
+  }
+}
+
 function initConsentBanner() {
   const banner = document.getElementById("consentBanner");
   if (!banner) return;
@@ -4145,6 +4193,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initStackBuyCta();
   initToTopPin();
   initDesignerOverlay();
+  initCapPromo();
   initShareButton();
   initMailCopyButton();
   initUseCasesCarousel();
