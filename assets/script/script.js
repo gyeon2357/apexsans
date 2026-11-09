@@ -2059,6 +2059,72 @@ function snoozeConsent() {
   } catch (e) {}
 }
 
+// Apex Cap 이미지 — 슬라이드를 다 본 뒤 우측 하단에 띄우고, 굿즈 구간에서는 감춘다.
+function initCapFloat() {
+  const cap = document.getElementById("capFloat");
+  if (!cap) return;
+  const consent = document.getElementById("consentBanner");
+  let wanted = false;
+  let inGoods = false;
+  let hideTimer = null;
+
+  // 쿠키 안내와 겹치면(모바일) 숨기지 않고 그 위로 올린다.
+  function lift() {
+    let px = 0;
+    if (consent && !consent.hidden && !cap.hidden) {
+      const c = consent.getBoundingClientRect();
+      const r = cap.getBoundingClientRect();
+      if (c.left < r.right && c.right > r.left) px = Math.ceil(c.height) + 8;
+    }
+    cap.style.setProperty("--cap-lift", px + "px");
+  }
+
+  function sync() {
+    if (wanted && !inGoods) {
+      window.clearTimeout(hideTimer);
+      hideTimer = null;
+      cap.classList.remove("is-leaving");
+      cap.hidden = false;
+    } else if (!cap.hidden && !hideTimer) {
+      cap.classList.add("is-leaving");
+      hideTimer = window.setTimeout(() => {
+        hideTimer = null;
+        cap.hidden = true;
+        cap.classList.remove("is-leaving");
+      }, 400);
+    }
+    lift();
+  }
+
+  const after = document.getElementById("Glyphs");
+  const goods = document.getElementById("UseCases");
+  if (!("IntersectionObserver" in window) || !after) {
+    wanted = true;
+    sync();
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting || e.boundingClientRect.top < 0)) return;
+      io.disconnect();
+      window.setTimeout(() => { wanted = true; sync(); }, 600);
+    });
+    io.observe(after);
+  }
+  if (goods && "IntersectionObserver" in window) {
+    new IntersectionObserver(
+      (entries) => {
+        inGoods = entries[entries.length - 1].isIntersecting;
+        sync();
+      },
+      { rootMargin: "-35% 0px -35% 0px" }
+    ).observe(goods);
+  }
+
+  if (consent) {
+    new MutationObserver(lift).observe(consent, { attributes: true, attributeFilter: ["hidden"] });
+  }
+  window.addEventListener("resize", lift, { passive: true });
+}
+
 function initConsentBanner() {
   const banner = document.getElementById("consentBanner");
   if (!banner) return;
@@ -4145,6 +4211,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initStackBuyCta();
   initToTopPin();
   initDesignerOverlay();
+  initCapFloat();
   initShareButton();
   initMailCopyButton();
   initUseCasesCarousel();
