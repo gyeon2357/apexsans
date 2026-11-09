@@ -118,6 +118,7 @@
 <link rel="stylesheet" href="assets/style/style.css" />
 <link rel="stylesheet" href="assets/style/probe.css" />
 <link rel="stylesheet" href="assets/style/about-fx.css" />
+<link rel="stylesheet" href="assets/style/promo.css" />
 </head>
 <body class="probe-intro">
 <noscript><style>body.probe-intro .site-header,
@@ -1129,6 +1130,20 @@ body.probe-intro .probe__hint { opacity: 1; visibility: visible; }</style></nosc
     </button>
   </div>
 
+  <aside class="promo" id="capPromo" aria-labelledby="capPromoTitle" hidden>
+    <div class="promo__main">
+      <img class="promo__img" src="assets/images/apex-cap-front.jpg" alt="" width="1200" height="1200" loading="lazy" decoding="async" />
+      <div class="promo__text">
+        <p class="promo__title" id="capPromoTitle" data-ko="Apex Cap 판매 중" data-en="Apex Cap now available">Apex Cap 판매 중</p>
+        <p class="promo__desc">Nylon 100%</p>
+      </div>
+      <button id="capPromoClose" type="button" class="promo__close" aria-label="Apex Cap 알림 닫기">
+        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 2L14 14M14 2L2 14" /></svg>
+      </button>
+    </div>
+    <a class="promo__cta" id="capPromoCta" href="#UseCases" data-ko="보러 가기" data-en="Go to shop">보러 가기</a>
+  </aside>
+
 <!-- Scripts -->
 <script src="assets/script/vendor/lenis.min.js"></script>
 <script src="assets/script/vendor/gsap.min.js"></script>
@@ -1137,5 +1152,6 @@ body.probe-intro .probe__hint { opacity: 1; visibility: visible; }</style></nosc
 <script src="assets/script/script.js"></script>
 <script src="assets/script/probe.js"></script>
 <script src="assets/script/about-fx.js"></script>
+<script src="assets/script/promo.js"></script>
 </body>
 </html>
