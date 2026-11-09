@@ -1130,17 +1130,18 @@ body.probe-intro .probe__hint { opacity: 1; visibility: visible; }</style></nosc
     </button>
   </div>
 
-  <aside class="consent promo" id="capPromo" aria-labelledby="capPromoTitle" hidden>
-    <a class="promo__link" href="#UseCases">
+  <aside class="promo" id="capPromo" aria-labelledby="capPromoTitle" hidden>
+    <div class="promo__head">
+      <p class="promo__title" id="capPromoTitle" data-ko="Apex Cap 판매 중" data-en="Apex Cap now available">Apex Cap 판매 중</p>
+      <button id="capPromoClose" type="button" class="promo__close" aria-label="Apex Cap 알림 닫기">
+        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 2L14 14M14 2L2 14" /></svg>
+      </button>
+    </div>
+    <div class="promo__body">
       <img class="promo__img" src="assets/images/apex-cap-front.jpg" alt="" width="1200" height="1200" loading="lazy" decoding="async" />
-      <span class="promo__text">
-        <span class="promo__title" id="capPromoTitle" data-ko="Apex Cap 판매 중" data-en="Apex Cap now available">Apex Cap 판매 중</span>
-        <span class="promo__meta">Nylon 100%</span>
-      </span>
-    </a>
-    <button id="capPromoClose" type="button" class="consent__close" aria-label="Apex Cap 알림 닫기">
-      <span aria-hidden="true">&times;</span>
-    </button>
+      <p class="promo__desc">Nylon 100%</p>
+    </div>
+    <a class="promo__cta" id="capPromoCta" href="#UseCases" data-ko="보러 가기" data-en="Go to shop">보러 가기</a>
   </aside>
 
 <!-- Scripts -->

@@ -2060,7 +2060,7 @@ function snoozeConsent() {
 }
 
 const CAP_PROMO_KEY = "apex-cap-promo-closed";
-const CAP_PROMO_DELAY_MS = 1500;
+const CAP_PROMO_DELAY_MS = 600;
 
 function initCapPromo() {
   const promo = document.getElementById("capPromo");
@@ -2077,16 +2077,18 @@ function initCapPromo() {
     promo.hidden = closed || !wanted || !!(consent && !consent.hidden);
   };
 
+  // 슬라이드를 다 본 뒤 — 슬라이드 다음 구간(Glyphs)이 화면에 들어오면 띄운다.
+  const after = document.getElementById("Glyphs");
   function arm() {
     window.setTimeout(() => { wanted = true; sync(); }, CAP_PROMO_DELAY_MS);
   }
-  if (document.body.classList.contains("probe-intro")) {
-    const watch = new MutationObserver(() => {
-      if (document.body.classList.contains("probe-intro")) return;
-      watch.disconnect();
+  if (after && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting || e.boundingClientRect.top < 0)) return;
+      io.disconnect();
       arm();
     });
-    watch.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    io.observe(after);
   } else {
     arm();
   }
@@ -2095,16 +2097,18 @@ function initCapPromo() {
     new MutationObserver(sync).observe(consent, { attributes: true, attributeFilter: ["hidden"] });
   }
 
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-      closed = true;
-      try {
-        localStorage.setItem(CAP_PROMO_KEY, "1");
-      } catch (e) {}
-      promo.classList.add("is-leaving");
-      window.setTimeout(sync, 400);
-    });
+  function dismiss() {
+    if (closed) return;
+    closed = true;
+    try {
+      localStorage.setItem(CAP_PROMO_KEY, "1");
+    } catch (e) {}
+    promo.classList.add("is-leaving");
+    window.setTimeout(sync, 400);
   }
+  if (closeBtn) closeBtn.addEventListener("click", dismiss);
+  const cta = document.getElementById("capPromoCta");
+  if (cta) cta.addEventListener("click", dismiss);
 }
 
 function initConsentBanner() {
