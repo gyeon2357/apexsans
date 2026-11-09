@@ -1477,7 +1477,6 @@ body.intro-lock .main-screen {
 }
 
 .slide__inner {
-  width: min(42.5rem, 90vw);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -1513,25 +1512,34 @@ body.intro-lock .main-screen {
 }
 
 .slide__inner--pinned {
+  --slide-gutter: calc(1.125rem + env(safe-area-inset-left));
+  --slide-text-bottom: 6rem;
+  position: relative;
+  width: 100%;
   height: 100%;
-  justify-content: flex-start;
-  padding-block: 10vh 14vh;
+  justify-content: center;
+  padding: 0;
   gap: 0;
 
   --morph-k: min(
     0.134vh,
-    calc((68vh - 14rem) / 398.42),
+    calc((66vh - 17rem) / 398.42),
     calc(96vw / 715.14)
   );
 }
 
 .slide__inner--pinned > .slide__morph {
-  margin-top: 4vh;
-  margin-bottom: 6vh;
+  margin: 0;
+  translate: 0 -5vh;
 }
 
 .slide__inner--pinned > .slide__text {
-  margin-top: auto;
+  position: absolute;
+  left: var(--slide-gutter);
+  bottom: var(--slide-text-bottom);
+  width: min(84ch, calc(100% - var(--slide-gutter) * 2));
+  margin: 0;
+  text-align: left;
 }
 
 #slide1Morph {
@@ -1610,35 +1618,22 @@ body.intro-lock .main-screen {
 
 @media (max-width: 640px) {
   .slide__inner--pinned {
-    padding-block: 13vh 8vh;
-
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    grid-template-columns: minmax(0, 1fr);
-    align-items: center;
-    justify-items: center;
+    --slide-text-bottom: calc(3.5rem + env(safe-area-inset-bottom));
 
     --morph-k: min(
       0.134vh,
-      calc((78vh - 20rem) / 398.42),
+      calc((78vh - 22rem) / 398.42),
       calc(96vw / 715.14)
     );
   }
 
   .slide__inner--pinned > .slide__morph {
-    margin-block: 0;
-    place-self: center;
-    translate: 0 -2vh;
+    translate: 0 -4vh;
   }
 
   .slide__inner--pinned > .slide__text {
-    margin-top: 0;
-    padding-top: 3vh;
-    text-align: left;
+    width: calc(100% - var(--slide-gutter) * 2);
     text-wrap: wrap;
-    justify-self: center;
-    width: fit-content;
-    max-width: 100%;
   }
 }
 
@@ -4280,16 +4275,6 @@ body.keep-header.main-screen-visible .site-header {
 @supports (height: 100lvh) and (height: 100svh) {
   .stack[data-stack="sticky"] .slide {
     padding-bottom: calc(100lvh - 100svh);
-  }
-}
-
-.stack[data-stack="sticky"] .slide__inner--pinned {
-  padding-bottom: 12rem;
-}
-
-@media (max-width: 640px) {
-  .stack[data-stack="sticky"] .slide__inner--pinned {
-    padding-bottom: calc(3.25rem + env(safe-area-inset-bottom));
   }
 }
 

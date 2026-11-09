@@ -3753,6 +3753,8 @@ const MORPH_UNITS = {
 };
 const MORPH_K_MAX_VH = 0.134;
 const MORPH_W_LIMIT = 0.96;
+const MORPH_TEXT_GAP = 32;
+const MORPH_TOP_CLEAR = 64;
 
 function initSlideMorphFit() {
   const inners = Array.prototype.slice.call(
@@ -3771,19 +3773,32 @@ function initSlideMorphFit() {
 
       const cs = getComputedStyle(inner);
       const ms = getComputedStyle(morph);
-      let avail =
-        inner.clientHeight -
-        parseFloat(cs.paddingTop) -
-        parseFloat(cs.paddingBottom) -
-        parseFloat(ms.marginTop) -
-        parseFloat(ms.marginBottom);
+      const text = inner.querySelector(".slide__text");
+      let avail;
 
-      Array.prototype.forEach.call(inner.children, function (el) {
-        if (el === morph) return;
-        const pos = getComputedStyle(el).position;
-        if (pos === "absolute" || pos === "fixed") return;
-        avail -= el.offsetHeight;
-      });
+      if (text && getComputedStyle(text).position === "absolute") {
+        // 그림은 가운데에서 살짝 위(translate)에 서고, 설명글은 아래에 따로 놓인다 —
+        // 그림의 아래 끝이 설명글 위 끝(여유 MORPH_TEXT_GAP)을, 위 끝이 헤더를 넘지 않는 만큼.
+        const shift = parseFloat((ms.translate || "0 0").split(" ")[1]) || 0;
+        const center = inner.clientHeight / 2 + shift;
+        const below = text.offsetTop - MORPH_TEXT_GAP - center;
+        const above = center - MORPH_TOP_CLEAR;
+        avail = 2 * Math.min(below, above);
+      } else {
+        avail =
+          inner.clientHeight -
+          parseFloat(cs.paddingTop) -
+          parseFloat(cs.paddingBottom) -
+          parseFloat(ms.marginTop) -
+          parseFloat(ms.marginBottom);
+
+        Array.prototype.forEach.call(inner.children, function (el) {
+          if (el === morph) return;
+          const pos = getComputedStyle(el).position;
+          if (pos === "absolute" || pos === "fixed") return;
+          avail -= el.offsetHeight;
+        });
+      }
 
       if (avail > 0) k = Math.min(k, avail / units.h);
       k = Math.min(k, (window.innerWidth * MORPH_W_LIMIT) / units.w);
