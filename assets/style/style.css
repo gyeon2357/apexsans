@@ -1563,7 +1563,6 @@ body.intro-lock .main-screen {
   font-size: 1rem;
   line-height: 1.55;
   color: var(--text);
-  margin: 0;
 }
 
 .slide__title {
@@ -1625,18 +1624,27 @@ body.intro-lock .main-screen {
     --morph-k: min(
       0.134vh,
       calc((78vh - 22rem) / 398.42),
-      calc(96vw / 715.14)
+      calc((100vw - 2.25rem) / 715.14)
     );
   }
 
+  /* 모바일: 그림도 설명글처럼 좌측 맞춤 — 헤더와 설명글 사이 빈 곳의 세로 가운데에 선다. */
+  .slide__inner--pinned {
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: calc(var(--header-h, 3.375rem) + 1.5rem) var(--slide-gutter) var(--slide-text-bottom);
+  }
+
   .slide__inner--pinned > .slide__morph {
-    translate: 0 -4vh;
+    translate: none;
+    margin-block: auto;
   }
 
   .slide__inner--pinned > .slide__text {
-    left: var(--slide-gutter);
+    position: static;
     translate: none;
-    width: calc(100% - var(--slide-gutter) * 2);
+    width: 100%;
+    margin-top: 2rem;
     text-wrap: wrap;
   }
 }

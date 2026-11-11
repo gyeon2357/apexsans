@@ -3785,23 +3785,22 @@ function initSlideMorphFit() {
         const above = center - MORPH_TOP_CLEAR;
         avail = 2 * Math.min(below, above);
       } else {
-        avail =
-          inner.clientHeight -
-          parseFloat(cs.paddingTop) -
-          parseFloat(cs.paddingBottom) -
-          parseFloat(ms.marginTop) -
-          parseFloat(ms.marginBottom);
+        // 모바일: 그림은 설명글 위 빈 곳에 선다(위아래 margin auto라 그 값은 빼지 않는다).
+        avail = inner.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
 
         Array.prototype.forEach.call(inner.children, function (el) {
           if (el === morph) return;
-          const pos = getComputedStyle(el).position;
-          if (pos === "absolute" || pos === "fixed") return;
-          avail -= el.offsetHeight;
+          const es = getComputedStyle(el);
+          if (es.position === "absolute" || es.position === "fixed") return;
+          avail -= el.offsetHeight + parseFloat(es.marginTop) + parseFloat(es.marginBottom);
         });
       }
 
       if (avail > 0) k = Math.min(k, avail / units.h);
-      k = Math.min(k, (window.innerWidth * MORPH_W_LIMIT) / units.w);
+      // 폭: 좌우 여백이 있으면(모바일) 설명글과 같은 폭, 없으면 화면 폭의 MORPH_W_LIMIT.
+      const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+      const wAvail = padX > 0 ? inner.clientWidth - padX : window.innerWidth * MORPH_W_LIMIT;
+      k = Math.min(k, wAvail / units.w);
     });
 
     if (!(k > 0) || !isFinite(k)) return;
