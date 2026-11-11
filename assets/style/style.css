@@ -1632,7 +1632,7 @@ body.intro-lock .main-screen {
   .slide__inner--pinned {
     justify-content: flex-end;
     align-items: flex-start;
-    padding: calc(var(--header-h, 3.375rem) + 3rem) var(--slide-gutter) var(--slide-text-bottom);
+    padding: calc(var(--header-h, 3.375rem) + 4rem) var(--slide-gutter) var(--slide-text-bottom);
   }
 
   .slide__inner--pinned > .slide__morph {
