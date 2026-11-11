@@ -3785,7 +3785,7 @@ function initSlideMorphFit() {
         const above = center - MORPH_TOP_CLEAR;
         avail = 2 * Math.min(below, above);
       } else {
-        // 모바일: 그림은 설명글 위 빈 곳에 선다(위아래 margin auto라 그 값은 빼지 않는다).
+        // 모바일: 그림은 위 여백 아래 일정한 자리에 선다(아래 margin은 auto라 빼지 않는다).
         avail = inner.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
 
         Array.prototype.forEach.call(inner.children, function (el) {
