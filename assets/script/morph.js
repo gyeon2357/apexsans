@@ -1142,6 +1142,20 @@
     };
   }
 
+  // 전역 정지 — 정지 버튼이 모든 자동 재생 그림을 한꺼번에 멈추고 다시 튼다.
+  var globalPaused = false;
+  var controllers = [];
+
+  function setPaused(p) {
+    p = !!p;
+    if (p === globalPaused) return;
+    globalPaused = p;
+    controllers.forEach(function (c) {
+      if (p) c.pause();
+      else c.resume();
+    });
+  }
+
   function autoplayOnView(options) {
     var opt = Object.assign({ delay: 120, replay: true, threshold: 0.4 }, options || {});
     var mount = resolve(opt.mount);
@@ -1296,18 +1310,36 @@
       return segCount > 1 ? (segCount - 1) / segCount : 1;
     }
 
+    var animating = false;
+    var target = 1;
+
     function run() {
-      if (!inst || !shown) return;
+      if (!inst || !shown || globalPaused) return;
+      animating = true;
       if (phase === "toLast") {
         inst.set(0);
-        inst.playTo(lastStop());
+        target = lastStop();
       } else if (phase === "toFirst") {
-        inst.playTo(1);
+        target = 1;
       } else {
         inst.set(0);
-        inst.playTo(1);
+        target = 1;
       }
+      inst.playTo(target);
     }
+
+    function pause() {
+      clearTimeout(timer);
+      if (inst) inst.stop();
+    }
+
+    function resume() {
+      if (!inst || !shown) return;
+      // 움직이던 중이면 멈춘 자리에서 이어 가고, 쉬던 중이면 곧 다음 동작을 시작한다.
+      if (animating) inst.playTo(target);
+      else wait(300);
+    }
+    controllers.push({ pause: pause, resume: resume });
 
     function wait(ms) {
       clearTimeout(timer);
@@ -1320,6 +1352,7 @@
     }
 
     function onDone() {
+      animating = false;
       if (!shown || !inst) return;
 
       if (phase === "toLast") {
@@ -1341,6 +1374,7 @@
     function leave() {
       if (!shown || !inst) return;
       shown = false;
+      animating = false;
       clearTimeout(timer);
       inst.stop();
       phase = "toLast";
@@ -1448,5 +1482,9 @@
     },
     autoplayOnView: autoplayOnView,
     autoInit: autoInit,
+    setPaused: setPaused,
+    isPaused: function () {
+      return globalPaused;
+    },
   };
 })(window);

@@ -2059,6 +2059,31 @@ function snoozeConsent() {
   } catch (e) {}
 }
 
+// 슬라이드 그림 정지/재생 — 세 슬라이드의 morph를 한꺼번에 멈추고 다시 튼다.
+function initMorphPlayToggle() {
+  const btn = document.getElementById("morphPlayToggle");
+  if (!btn || !window.ApexMorph || !window.ApexMorph.setPaused) return;
+
+  function label() {
+    const en = document.documentElement.getAttribute("data-lang") === "en";
+    const paused = window.ApexMorph.isPaused();
+    btn.classList.toggle("is-paused", paused);
+    btn.setAttribute(
+      "aria-label",
+      paused
+        ? en ? "Play slide animation" : "슬라이드 그림 재생"
+        : en ? "Pause slide animation" : "슬라이드 그림 정지"
+    );
+  }
+
+  btn.addEventListener("click", () => {
+    window.ApexMorph.setPaused(!window.ApexMorph.isPaused());
+    label();
+  });
+  document.addEventListener("apex:langchange", label);
+  label();
+}
+
 function initConsentBanner() {
   const banner = document.getElementById("consentBanner");
   if (!banner) return;
@@ -3854,8 +3879,8 @@ function initUseCasesCarousel() {
   const items = Array.from(row.children);
   if (items.length < 2) return;
 
-  const AUTO_MS_WIDE = 9000;
-  const AUTO_MS_NARROW = 6400;
+  const AUTO_MS_WIDE = 13500;
+  const AUTO_MS_NARROW = 9600;
   const WIDE_MQ = "(min-width: 641px)";
   const isWide = () => !!(window.matchMedia && window.matchMedia(WIDE_MQ).matches);
   const autoMs = () => (isWide() ? AUTO_MS_WIDE : AUTO_MS_NARROW);
@@ -4144,6 +4169,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initStackBuyCta();
   initToTopPin();
   initDesignerOverlay();
+  initMorphPlayToggle();
   initShareButton();
   initMailCopyButton();
   initUseCasesCarousel();
