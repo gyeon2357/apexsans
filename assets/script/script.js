@@ -3977,21 +3977,6 @@ function initUseCasesCarousel() {
     });
   }
 
-  const WRAP_FADE_MS = 160;
-
-  function fadeToIndex(nextIndex) {
-    row.style.setProperty("--uc-wrap-fade", `${WRAP_FADE_MS}ms`);
-    row.classList.add("is-wrapping");
-    window.setTimeout(() => {
-      row.style.transition = "none";
-      index = nextIndex;
-      render();
-      void row.offsetWidth;
-      row.classList.remove("is-wrapping");
-      row.style.transition = "";
-    }, WRAP_FADE_MS);
-  }
-
   function jumpToIndex(nextIndex) {
     row.style.transition = "none";
     index = nextIndex;
@@ -4002,11 +3987,10 @@ function initUseCasesCarousel() {
 
   function goTo(i, userInitiated) {
     const nextIndex = ((i % pages) + pages) % pages;
-    const wrapping = index === pages - 1 && nextIndex === 0 && pages > 1;
-    if (isWide()) {
+    // 끝↔처음으로 돌아갈 때(4→1, 1→4)는 넓은 화면처럼 미끄러지지 않고 바로 바꾼다.
+    const wrapping = pages > 1 && Math.abs(nextIndex - index) === pages - 1;
+    if (isWide() || wrapping) {
       jumpToIndex(nextIndex);
-    } else if (wrapping) {
-      fadeToIndex(nextIndex);
     } else {
       index = nextIndex;
       render();

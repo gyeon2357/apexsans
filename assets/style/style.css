@@ -3313,16 +3313,6 @@ input[type="range"]::-moz-range-track {
   color: var(--on-accent);
 }
 
-.use-cases__item .placeholder-media,
-.use-cases__img {
-  transition: opacity var(--uc-wrap-fade, 160ms) ease;
-}
-
-.use-cases__row.is-wrapping .placeholder-media,
-.use-cases__row.is-wrapping .use-cases__img {
-  opacity: 0;
-}
-
 .site-footer__narrow {
   width: 100%;
   max-width: 75rem;
