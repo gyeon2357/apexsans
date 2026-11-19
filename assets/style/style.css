@@ -5154,7 +5154,7 @@ html.lenis body {
   }
 
   .designers__panel {
-    width: 80%;
+    width: calc(100% - 2rem);
   }
 
   .designers__grid {
@@ -5228,6 +5228,18 @@ body.designers-open .page-line {
   height: auto;
   vertical-align: middle;
   line-height: 0;
+}
+
+/* 한글 이름은 라틴 기준(middle)보다 위에 그려져 [i]가 내려가 보인다 —
+   한글일 때만 줄을 가운데로 맞춘다. */
+.site-footer__info dd:has(> .tester__ot-info):lang(ko) {
+  display: flex;
+  align-items: center;
+  min-height: 1.6em;
+}
+
+.site-footer__info dd:has(> .tester__ot-info):lang(ko) > span {
+  line-height: 1;
 }
 
 .site-footer__bottom-inner .site-footer__about:hover,
