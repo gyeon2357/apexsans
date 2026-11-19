@@ -3272,11 +3272,9 @@ function initToTopPin() {
 
 function initDesignerOverlay() {
   const overlay = document.getElementById("designerOverlay");
-  const backBtn = document.getElementById("designersBack");
   const closeBtn = document.getElementById("designersClose");
-  if (!overlay || !backBtn) return;
-  // 데스크톱(641px~)은 가운데 팝업 + 좌측 상단 X, 모바일은 전체 화면 + Back.
-  const isPopup = () => window.matchMedia("(min-width: 641px)").matches;
+  const panel = overlay ? overlay.querySelector(".designers__panel") : null;
+  if (!overlay || !closeBtn) return;
 
   const HASHES = ["font-designer", "site-designer", "designers"];
   const CLOSE_MS = 260;
@@ -3312,11 +3310,13 @@ function initDesignerOverlay() {
     overlay.scrollTop = 0;
     window.requestAnimationFrame(() => {
       overlay.classList.add("is-open");
+      // 팝업이 화면보다 길면(좁은 화면) 누른 디자이너가 보이도록 내려 둔다.
       const target = overlay.querySelector('.designer[data-designer="' + key + '"]');
-      if (target && window.matchMedia("(max-width: 760px)").matches) {
-        overlay.scrollTop = Math.max(0, target.offsetTop - 64);
+      if (target && overlay.scrollHeight > overlay.clientHeight + 1) {
+        const y = target.getBoundingClientRect().top - overlay.getBoundingClientRect().top;
+        overlay.scrollTop = Math.max(0, y - 24);
       }
-      (isPopup() && closeBtn ? closeBtn : backBtn).focus({ preventScroll: true });
+      closeBtn.focus({ preventScroll: true });
     });
   }
 
@@ -3357,8 +3357,7 @@ function initDesignerOverlay() {
     el.addEventListener("click", () => open(el.dataset.designer, el));
   });
 
-  backBtn.addEventListener("click", close);
-  if (closeBtn) closeBtn.addEventListener("click", close);
+  closeBtn.addEventListener("click", close);
 
   const logoLink = document.querySelector(".site-header__logo-link");
   if (logoLink) {
@@ -3370,9 +3369,8 @@ function initDesignerOverlay() {
   }
 
   overlay.addEventListener("click", (e) => {
-    if (e.target.closest(".designer__role, .designer__name, .designer__bio, .designer__link, .designers__back, .designers__close")) return;
-    // 팝업일 때는 패널 바깥(가린 배경)을 눌러야 닫힌다.
-    if (isPopup() && e.target.closest(".designers__panel")) return;
+    // 패널 바깥(가린 배경)을 눌러야 닫힌다.
+    if (panel && panel.contains(e.target)) return;
     close();
   });
 

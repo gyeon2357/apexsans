@@ -5015,9 +5015,9 @@ html.lenis body {
 
 
 /* == Designers overlay ================================= */
+/* 화면 가운데 뜨는 팝업 — 넓은 화면 최대 720px, 좁은 화면 폭 80%. 바깥은 옅게 가린다. */
 
 .designers {
-  --designers-pad: 1.125rem;
   position: fixed;
   inset: 0;
   z-index: 900;
@@ -5025,8 +5025,8 @@ html.lenis body {
   overflow-y: auto;
   overscroll-behavior: contain;
   display: flex;
-  flex-direction: column;
-  background: var(--bg);
+  padding: calc(var(--header-h, 3.375rem) + 1.5rem) 2rem 2rem;
+  background: color-mix(in oklab, var(--bg) 82%, transparent);
   color: var(--text);
   font-family: var(--info-font);
   opacity: 0;
@@ -5044,57 +5044,60 @@ html.lenis body {
   transition: opacity 0.25s ease, visibility 0s;
 }
 
-.designers__bar {
-  display: flex;
-  justify-content: flex-end;
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
-  padding: 0.75rem calc(var(--designers-pad) + env(safe-area-inset-right)) calc(1.5rem + env(safe-area-inset-bottom)) calc(var(--designers-pad) + env(safe-area-inset-left));
-  pointer-events: none;
-}
-
-.designers__bar > * {
-  pointer-events: auto;
-}
-
-.designers__back {
-  appearance: none;
-  -webkit-appearance: none;
-  background: none;
-  border: 0;
-  padding: 0.25rem 0;
-  font-family: inherit;
-  font-size: 0.8125rem;
-  color: var(--text);
-  cursor: pointer;
-  text-underline-offset: 0.2em;
-}
-
-.designers__back:hover {
-  text-decoration: underline;
-}
-
-.designers__back:focus-visible {
-  text-decoration: underline;
-  outline: 1px solid currentColor;
-  outline-offset: 0.25rem;
+.designers__panel {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin: auto;
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
 }
 
 .designers__grid {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
-  width: 100%;
-  max-width: 80rem;
-  padding: calc(5.75rem + env(safe-area-inset-top)) calc(var(--designers-pad) + env(safe-area-inset-right)) 2rem calc(var(--designers-pad) + env(safe-area-inset-left));
+  gap: 4rem;
+  padding: 3.5rem 2.5rem 2.5rem;
 }
 
-@media (max-width: 640px) {
-  .designers__grid {
-    justify-content: center;
-  }
+.designers__close {
+  appearance: none;
+  -webkit-appearance: none;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0.25rem;
+  border: 0;
+  background: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: color var(--t-hover);
+}
+
+.designers__close svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+}
+
+.designers__close:hover {
+  background: none;
+  color: var(--text);
+}
+
+.designers__close:focus-visible {
+  background: none;
+  color: var(--text);
+  outline: 1px solid currentColor;
+  outline-offset: 0.125rem;
 }
 
 .designer {
@@ -5144,6 +5147,47 @@ html.lenis body {
   color: var(--text);
 }
 
+@media (max-width: 640px) {
+  /* 좁은 화면: 폭 80% 팝업, 글자·여백을 한 단계씩 줄인다. */
+  .designers {
+    padding: calc(var(--header-h, 3.375rem) + 1rem) 0 calc(1.25rem + env(safe-area-inset-bottom));
+  }
+
+  .designers__panel {
+    width: 80%;
+  }
+
+  .designers__grid {
+    gap: 2.5rem;
+    padding: 2.75rem 1.125rem 1.5rem;
+  }
+
+  .designers__close {
+    top: 0.625rem;
+    right: 0.625rem;
+    width: 1.375rem;
+    height: 1.375rem;
+  }
+
+  .designer__name {
+    font-size: 1.0625rem;
+  }
+
+  .designer__role {
+    margin: 0.25rem 0 0.75rem;
+    font-size: max(12px, 0.625rem);
+  }
+
+  .designer__bio {
+    font-size: 0.75rem;
+  }
+
+  .designer__link {
+    margin-top: 0.75rem;
+    font-size: max(12px, 0.6875rem);
+  }
+}
+
 body.designers-open .stack__cta,
 body.designers-open .stack__index,
 body.designers-open .section-nav,
@@ -5153,84 +5197,6 @@ body.designers-open .page-line {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-}
-
-.designers__panel {
-  flex: 1 0 auto;
-  display: flex;
-  flex-direction: column;
-}
-
-/* 닫기(X) — 데스크톱 팝업에서만 쓴다. 모바일은 전체 화면 + 아래 Back. */
-.designers__close {
-  display: none;
-}
-
-@media (min-width: 641px) {
-  /* 데스크톱: 화면 가운데 뜨는 팝업(최대 600px), 바깥은 옅게 가린다. */
-  .designers {
-    padding: 2rem;
-    background: color-mix(in oklab, var(--bg) 82%, transparent);
-  }
-
-  .designers__panel {
-    flex: none;
-    position: relative;
-    width: 100%;
-    max-width: 600px;
-    margin: auto;
-    background: var(--bg);
-    border: 1px solid var(--border-strong);
-  }
-
-  .designers__grid {
-    max-width: none;
-    padding: 3.5rem 2.5rem 2.5rem;
-  }
-
-  .designers__bar {
-    display: none;
-  }
-
-  .designers__close {
-    appearance: none;
-    -webkit-appearance: none;
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.5rem;
-    height: 1.5rem;
-    padding: 0.25rem;
-    border: 0;
-    background: none;
-    color: var(--text-faint);
-    cursor: pointer;
-    transition: color var(--t-hover);
-  }
-
-  .designers__close svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.2;
-  }
-
-  .designers__close:hover {
-    background: none;
-    color: var(--text);
-  }
-
-  .designers__close:focus-visible {
-    background: none;
-    color: var(--text);
-    outline: 1px solid currentColor;
-    outline-offset: 0.125rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
