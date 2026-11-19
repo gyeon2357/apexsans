@@ -5123,6 +5123,10 @@ html.lenis body {
   overflow-wrap: anywhere;
 }
 
+.designer__bio:lang(ko) {
+  line-height: 1.55;
+}
+
 .designer__bio:empty {
   display: none;
 }
@@ -5149,6 +5153,84 @@ body.designers-open .page-line {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+}
+
+.designers__panel {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 닫기(X) — 데스크톱 팝업에서만 쓴다. 모바일은 전체 화면 + 아래 Back. */
+.designers__close {
+  display: none;
+}
+
+@media (min-width: 641px) {
+  /* 데스크톱: 화면 가운데 뜨는 팝업(최대 600px), 바깥은 옅게 가린다. */
+  .designers {
+    padding: 2rem;
+    background: color-mix(in oklab, var(--bg) 82%, transparent);
+  }
+
+  .designers__panel {
+    flex: none;
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+  }
+
+  .designers__grid {
+    max-width: none;
+    padding: 3.5rem 2.5rem 2.5rem;
+  }
+
+  .designers__bar {
+    display: none;
+  }
+
+  .designers__close {
+    appearance: none;
+    -webkit-appearance: none;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0.25rem;
+    border: 0;
+    background: none;
+    color: var(--text-faint);
+    cursor: pointer;
+    transition: color var(--t-hover);
+  }
+
+  .designers__close svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.2;
+  }
+
+  .designers__close:hover {
+    background: none;
+    color: var(--text);
+  }
+
+  .designers__close:focus-visible {
+    background: none;
+    color: var(--text);
+    outline: 1px solid currentColor;
+    outline-offset: 0.125rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

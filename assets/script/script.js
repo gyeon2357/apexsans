@@ -3273,7 +3273,10 @@ function initToTopPin() {
 function initDesignerOverlay() {
   const overlay = document.getElementById("designerOverlay");
   const backBtn = document.getElementById("designersBack");
+  const closeBtn = document.getElementById("designersClose");
   if (!overlay || !backBtn) return;
+  // 데스크톱(641px~)은 가운데 팝업 + 좌측 상단 X, 모바일은 전체 화면 + Back.
+  const isPopup = () => window.matchMedia("(min-width: 641px)").matches;
 
   const HASHES = ["font-designer", "site-designer", "designers"];
   const CLOSE_MS = 260;
@@ -3313,7 +3316,7 @@ function initDesignerOverlay() {
       if (target && window.matchMedia("(max-width: 760px)").matches) {
         overlay.scrollTop = Math.max(0, target.offsetTop - 64);
       }
-      backBtn.focus({ preventScroll: true });
+      (isPopup() && closeBtn ? closeBtn : backBtn).focus({ preventScroll: true });
     });
   }
 
@@ -3355,6 +3358,7 @@ function initDesignerOverlay() {
   });
 
   backBtn.addEventListener("click", close);
+  if (closeBtn) closeBtn.addEventListener("click", close);
 
   const logoLink = document.querySelector(".site-header__logo-link");
   if (logoLink) {
@@ -3366,7 +3370,9 @@ function initDesignerOverlay() {
   }
 
   overlay.addEventListener("click", (e) => {
-    if (e.target.closest(".designer__role, .designer__name, .designer__bio, .designer__link, .designers__back")) return;
+    if (e.target.closest(".designer__role, .designer__name, .designer__bio, .designer__link, .designers__back, .designers__close")) return;
+    // 팝업일 때는 패널 바깥(가린 배경)을 눌러야 닫힌다.
+    if (isPopup() && e.target.closest(".designers__panel")) return;
     close();
   });
 
