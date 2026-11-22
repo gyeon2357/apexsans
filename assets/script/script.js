@@ -2160,6 +2160,7 @@ function initLanguageToggle() {
 }
 
 const HEADER_OFFSET = 80;
+const BUY_BTN_AT = 0.58;
 
 function initAnchorJumps() {
   document.querySelectorAll('a[href^="#"]').forEach((link) => {
@@ -2171,8 +2172,15 @@ function initAnchorJumps() {
     link.addEventListener("click", (e) => {
       e.preventDefault();
       const rect = target.getBoundingClientRect();
-      const targetY = Math.max(0, rect.top + window.scrollY - HEADER_OFFSET);
-      scrollPageTo(targetY, { immediate: true });
+      let targetY = rect.top + window.scrollY - HEADER_OFFSET;
+      // Buy: 구매 문의 버튼이 화면 가운데보다 살짝 아래(BUY_BTN_AT)에 오도록 멈춘다.
+      const btn = id === "Buy" ? target.querySelector(".footer-btn") : null;
+      if (btn) {
+        const b = btn.getBoundingClientRect();
+        targetY = b.top + b.height / 2 + window.scrollY - window.innerHeight * BUY_BTN_AT;
+      }
+      const maxY = document.documentElement.scrollHeight - window.innerHeight;
+      scrollPageTo(Math.max(0, Math.min(targetY, maxY)), { immediate: true });
     });
   });
 }
