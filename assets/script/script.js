@@ -4178,9 +4178,7 @@ document.addEventListener("DOMContentLoaded", () => {
       var dot = document.createElement("button");
       dot.type = "button";
       dot.className = "stack__index-dot dot-nav__dot";
-      var title = slide.dataset.title || "";
-      dot.setAttribute("aria-label",
-        "슬라이드 " + (i + 1) + (title ? " — " + title : "") + "(으)로 이동");
+      dot.setAttribute("aria-label", (i + 1) + "번 슬라이드로 이동");
       dot.addEventListener("click", function () { goTo(i); });
       indexDotsEl.appendChild(dot);
       dots.push(dot);
