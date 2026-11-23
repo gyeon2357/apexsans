@@ -213,11 +213,7 @@ class StackedScroll {
         const dot = document.createElement("button");
         dot.type = "button";
         dot.className = "stack__index-dot dot-nav__dot";
-        const title = slide.dataset.title || "";
-        dot.setAttribute(
-          "aria-label",
-          `슬라이드 ${i + 1} / ${this.total}${title ? ` — ${title}` : ""}`
-        );
+        dot.setAttribute("aria-label", i18n(`${i + 1}번 슬라이드로 이동`, `Go to slide ${i + 1}`));
         dot.addEventListener("click", () => this.goToSlide(i));
         this.indexDotsEl.appendChild(dot);
         this.indexDots.push(dot);
@@ -312,9 +308,7 @@ class StackedScroll {
   announceSlide(index) {
     const live = document.getElementById("stackLiveRegion");
     if (!live) return;
-    const slide = this.slides[index];
-    const title = (slide && slide.dataset.title) || "";
-    live.textContent = `슬라이드 ${index + 1} / ${this.total}${title ? ` — ${title}` : ""}`;
+    live.textContent = i18n(`슬라이드 ${index + 1} / ${this.total}`, `Slide ${index + 1} of ${this.total}`);
   }
 
   cancelAutoScroll() {
@@ -1035,24 +1029,34 @@ function initTypeTester() {
   }
 
   const PREVIEW_COLORS = ["dark", "red", "light"];
-  const PREVIEW_COLOR_KO = { dark: "다크", red: "레드", light: "라이트" };
+  const PREVIEW_COLOR_NAME = {
+    dark: ["다크", "dark"],
+    red: ["레드", "red"],
+    light: ["라이트", "light"],
+  };
   const colorBtn = document.getElementById("testerColorBtn");
   const panel = preview.closest(".tester");
   if (colorBtn && panel) {
     const siteTheme = () =>
       document.documentElement.getAttribute("data-theme") || PREVIEW_COLORS[0];
 
+    const labelPreviewColor = () => {
+      const name = panel.getAttribute("data-preview-theme");
+      const nm = name ? PREVIEW_COLOR_NAME[name] : null;
+      colorBtn.setAttribute(
+        "aria-label",
+        nm
+          ? i18n(`미리보기 색 전환 (현재 ${nm[0]})`, `Switch preview color (current: ${nm[1]})`)
+          : i18n("미리보기 색 전환 (지금은 페이지와 같은 색)", "Switch preview color (now same as the page)")
+      );
+    };
     const setPreviewColor = (name) => {
       if (name) panel.setAttribute("data-preview-theme", name);
       else panel.removeAttribute("data-preview-theme");
       colorBtn.setAttribute("aria-pressed", String(!!name));
-      colorBtn.setAttribute(
-        "aria-label",
-        name
-          ? `미리보기 색 전환 (현재 ${PREVIEW_COLOR_KO[name]})`
-          : "미리보기 색 전환 (지금은 페이지와 같은 색)"
-      );
+      labelPreviewColor();
     };
+    document.addEventListener("apex:langchange", labelPreviewColor);
 
     onFirstTap(colorBtn, () => {
       const now = panel.getAttribute("data-preview-theme") || siteTheme();
@@ -1644,6 +1648,10 @@ function currentLang() {
   return document.documentElement.getAttribute("data-lang") === "en" ? "en" : "ko";
 }
 
+function i18n(ko, en) {
+  return currentLang() === "en" ? en : ko;
+}
+
 function otFeature() {
   return OPENTYPE_FEATURES.find((f) => f.id === otState.id) || OPENTYPE_FEATURES[0];
 }
@@ -1952,7 +1960,15 @@ function storageGet(key) {
 }
 
 const THEMES = ["dark", "red", "light"];
-const THEME_LABELS = { red: "레드", dark: "다크", light: "라이트" };
+const THEME_LABELS = { red: ["레드", "red"], dark: ["다크", "dark"], light: ["라이트", "light"] };
+
+function labelThemeToggle() {
+  const btn = document.getElementById("themeToggle");
+  if (!btn) return;
+  const nm = THEME_LABELS[document.documentElement.getAttribute("data-theme")] || THEME_LABELS.dark;
+  btn.setAttribute("aria-label", i18n(`색상 모드 전환 (현재 ${nm[0]} 모드)`, `Switch color mode (current: ${nm[1]})`));
+}
+document.addEventListener("apex:langchange", labelThemeToggle);
 
 function applyTheme(theme) {
   const next = THEMES.includes(theme) ? theme : THEMES[0];
@@ -1963,10 +1979,7 @@ function applyTheme(theme) {
   const unlock = () => root.classList.remove("theme-switching");
   requestAnimationFrame(() => requestAnimationFrame(unlock));
   window.setTimeout(unlock, 120);
-  const btn = document.getElementById("themeToggle");
-  if (btn) {
-    btn.setAttribute("aria-label", `색상 모드 전환 (현재 ${THEME_LABELS[next]} 모드)`);
-  }
+  labelThemeToggle();
 
   syncThemeColor();
 }
@@ -2100,6 +2113,14 @@ function initLanguageToggle() {
       el.setAttribute("href", lang === "en" ? el.dataset.hrefEn : el.dataset.hrefKo);
     });
 
+    [["aria", "aria-label"], ["title", "title"], ["alt", "alt"]].forEach(([key, attr]) => {
+      const K = key + "Ko";
+      const E = key + "En";
+      document.querySelectorAll(`[data-${key}-ko][data-${key}-en]`).forEach((el) => {
+        el.setAttribute(attr, lang === "en" ? el.dataset[E] : el.dataset[K]);
+      });
+    });
+
     document.querySelectorAll("[data-ko][data-en]").forEach((el) => {
       if (el.id === "testerPreview") return;
       const next = lang === "en" ? el.dataset.en : el.dataset.ko;
@@ -2109,7 +2130,7 @@ function initLanguageToggle() {
       toggleBtn.textContent = lang === "en" ? "KR" : "EN";
       toggleBtn.setAttribute(
         "aria-label",
-        lang === "en" ? "언어 전환 (현재 영어)" : "언어 전환 (현재 한국어)"
+        lang === "en" ? "Switch language (current: English)" : "언어 전환 (현재 한국어)"
       );
     }
 
@@ -3936,7 +3957,7 @@ function initUseCasesCarousel() {
       const dot = document.createElement("button");
       dot.type = "button";
       dot.className = "use-cases__dot dot-nav__dot";
-      dot.setAttribute("aria-label", `${i + 1}번째 이미지 보기`);
+      dot.setAttribute("aria-label", i18n(`${i + 1}번째 이미지 보기`, `Show image ${i + 1}`));
       const target = i;
       dot.addEventListener("click", () => goTo(target, true));
       dotsEl.appendChild(dot);
@@ -4070,7 +4091,10 @@ function initUseCasesCarousel() {
   if (nextBtn) nextBtn.addEventListener("click", () => step(1));
 
   window.addEventListener("resize", layout);
-  document.addEventListener("apex:langchange", paintCaptions);
+  document.addEventListener("apex:langchange", () => {
+    paintCaptions();
+    dots.forEach((d, i) => d.setAttribute("aria-label", i18n(`${i + 1}번째 이미지 보기`, `Show image ${i + 1}`)));
+  });
 
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) stop();
@@ -4178,12 +4202,18 @@ document.addEventListener("DOMContentLoaded", () => {
       var dot = document.createElement("button");
       dot.type = "button";
       dot.className = "stack__index-dot dot-nav__dot";
-      dot.setAttribute("aria-label", (i + 1) + "번 슬라이드로 이동");
       dot.addEventListener("click", function () { goTo(i); });
       indexDotsEl.appendChild(dot);
       dots.push(dot);
     });
   }
+  function labelDots() {
+    dots.forEach(function (dot, i) {
+      dot.setAttribute("aria-label", i18n((i + 1) + "번 슬라이드로 이동", "Go to slide " + (i + 1)));
+    });
+  }
+  labelDots();
+  document.addEventListener("apex:langchange", labelDots);
 
   function trackTop(i) {
     var y = 0;
@@ -4314,8 +4344,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       if (indexLabelEl) indexLabelEl.textContent = slides[idx].dataset.title || "";
       if (liveEl) {
-        liveEl.textContent = "슬라이드 " + (idx + 1) + " / " + slides.length +
-          (slides[idx].dataset.title ? " — " + slides[idx].dataset.title : "");
+        liveEl.textContent = i18n("슬라이드 " + (idx + 1) + " / " + slides.length,
+          "Slide " + (idx + 1) + " of " + slides.length);
       }
     }
 
