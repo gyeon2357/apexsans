@@ -273,9 +273,6 @@
 
   var sampleCache = typeof Map === "function" ? new Map() : null;
 
-  // ── 점 좌표 미리 계산 ───────────────────────────────────────────
-  // 1) <html data-morph-points="…json">이 있으면 미리 뽑아 둔 점을 쓴다(런타임 계산 없음).
-  // 2) 없거나 도형 수가 안 맞으면, 유휴 시간에 경로 하나씩 나눠 뽑는다(requestIdleCallback).
   function srcKey(url) {
     try {
       url = new URL(url, document.baseURI).pathname;
@@ -284,7 +281,6 @@
     return i >= 0 ? url.slice(i) : url.replace(/^\.?\//, "");
   }
 
-  // <html data-morph-points="폴더/">이면 SVG와 함께 폴더/<이름>.json을 받아 둔다.
   var pointsTable = {};
   function fetchPoints(url) {
     var dir = document.documentElement.getAttribute("data-morph-points");
@@ -302,8 +298,6 @@
       .catch(function () {});
   }
 
-  // JSON 형식: { "96": [ /*shape*/ [ /*ring*/ [x0, y0, dx1, dy1, …] ] ] } — 값은 10배 정수,
-  // 첫 점은 절대 좌표, 그다음부터는 앞 점과의 차이.
   function pointsFromTable(key, count) {
     if (!key || !key.getAttribute) return null;
     var src = key.getAttribute("data-morph-src");
@@ -1272,7 +1266,6 @@
     };
   }
 
-  // 전역 정지 — 정지 버튼이 모든 자동 재생 그림을 한꺼번에 멈추고 다시 튼다.
   var globalPaused = false;
   var controllers = [];
 
@@ -1468,7 +1461,6 @@
 
     function resume() {
       if (!inst || !shown) return;
-      // 움직이던 중이면 멈춘 자리에서 이어 가고, 쉬던 중이면 곧 다음 동작을 시작한다.
       if (animating) inst.playTo(target);
       else wait(300);
     }
@@ -1617,7 +1609,6 @@
     autoInit: autoInit,
     setPaused: setPaused,
     sampleStats: sampleStats,
-    // 점 표 만들기용 — 원본 SVG 하나를 지금 바로 뽑아 [shape][ring] = [x*10,y*10,…]로 돌려준다.
     _sampleUrl: function (url, count) {
       return fetchSvg(url).then(function (svg) {
         var clone = toSvgElement(svg);

@@ -46,7 +46,6 @@ function initCapPromo() {
     lift();
   }
 
-  // 슬라이드를 다 본 뒤 — 슬라이드 다음 구간(Glyphs)이 화면에 들어오면 띄운다.
   const after = document.getElementById("Glyphs");
   function arm() {
     window.setTimeout(() => { wanted = true; sync(); }, CAP_PROMO_DELAY_MS);
@@ -62,7 +61,6 @@ function initCapPromo() {
     arm();
   }
 
-  // 굿즈 슬라이드가 화면 가운데에 오면 비켜 준다(닫은 것으로 치지 않는다).
   const goods = document.getElementById("UseCases");
   if (goods && "IntersectionObserver" in window) {
     new IntersectionObserver(

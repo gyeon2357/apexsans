@@ -1142,7 +1142,6 @@
     };
   }
 
-  // 전역 정지 — 정지 버튼이 모든 자동 재생 그림을 한꺼번에 멈추고 다시 튼다.
   var globalPaused = false;
   var controllers = [];
 
@@ -1335,7 +1334,6 @@
 
     function resume() {
       if (!inst || !shown) return;
-      // 움직이던 중이면 멈춘 자리에서 이어 가고, 쉬던 중이면 곧 다음 동작을 시작한다.
       if (animating) inst.playTo(target);
       else wait(300);
     }

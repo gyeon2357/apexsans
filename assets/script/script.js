@@ -778,8 +778,6 @@ function initTypeTester() {
 
   window.addEventListener("load", updateTesterTruncation);
 
-
-
   bindings.forEach(({ inputId, outputId, prop, suffix, unit, decimals }) => {
     const input = document.getElementById(inputId);
     const output = document.getElementById(outputId);
@@ -2059,7 +2057,6 @@ function snoozeConsent() {
   } catch (e) {}
 }
 
-// 슬라이드 그림 정지/재생 — 세 슬라이드의 morph를 한꺼번에 멈추고 다시 튼다.
 function initMorphPlayToggle() {
   const btn = document.getElementById("morphPlayToggle");
   if (!btn || !window.ApexMorph || !window.ApexMorph.setPaused) return;
@@ -2173,7 +2170,6 @@ function initAnchorJumps() {
       e.preventDefault();
       const rect = target.getBoundingClientRect();
       let targetY = rect.top + window.scrollY - HEADER_OFFSET;
-      // Buy: 구매 문의 버튼이 화면 가운데보다 살짝 아래(BUY_BTN_AT)에 오도록 멈춘다.
       const btn = id === "Buy" ? target.querySelector(".footer-btn") : null;
       if (btn) {
         const b = btn.getBoundingClientRect();
@@ -3814,15 +3810,12 @@ function initSlideMorphFit() {
       let avail;
 
       if (text && getComputedStyle(text).position === "absolute") {
-        // 그림은 가운데에서 살짝 위(translate)에 서고, 설명글은 아래에 따로 놓인다 —
-        // 그림의 아래 끝이 설명글 위 끝(여유 MORPH_TEXT_GAP)을, 위 끝이 헤더를 넘지 않는 만큼.
         const shift = parseFloat((ms.translate || "0 0").split(" ")[1]) || 0;
         const center = inner.clientHeight / 2 + shift;
         const below = text.offsetTop - MORPH_TEXT_GAP - center;
         const above = center - MORPH_TOP_CLEAR;
         avail = 2 * Math.min(below, above);
       } else {
-        // 모바일: 그림은 위 여백 아래 일정한 자리에 선다(아래 margin은 auto라 빼지 않는다).
         avail = inner.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
 
         Array.prototype.forEach.call(inner.children, function (el) {
@@ -3834,7 +3827,6 @@ function initSlideMorphFit() {
       }
 
       if (avail > 0) k = Math.min(k, avail / units.h);
-      // 폭: 좌우 여백이 있으면(모바일) 설명글과 같은 폭, 없으면 화면 폭의 MORPH_W_LIMIT.
       const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
       const wAvail = padX > 0 ? inner.clientWidth - padX : window.innerWidth * MORPH_W_LIMIT;
       k = Math.min(k, wAvail / units.w);
@@ -3999,7 +3991,6 @@ function initUseCasesCarousel() {
 
   function goTo(i, userInitiated) {
     const nextIndex = ((i % pages) + pages) % pages;
-    // 끝↔처음으로 돌아갈 때(4→1, 1→4)는 넓은 화면처럼 미끄러지지 않고 바로 바꾼다.
     const wrapping = pages > 1 && Math.abs(nextIndex - index) === pages - 1;
     if (isWide() || wrapping) {
       jumpToIndex(nextIndex);

@@ -1684,7 +1684,6 @@ body.intro-lock .main-screen {
     );
   }
 
-  /* 모바일: 그림도 설명글처럼 좌측 맞춤 — 설명글이 아래 끝에 맞춰 서듯, 그림은 위에서 일정한 자리에 선다. */
   .slide__inner--pinned {
     justify-content: flex-end;
     align-items: flex-start;
@@ -2554,8 +2553,6 @@ main .specimen__heading {
   content: "Type here to test the typeface";
 }
 
-/* 0.854em = APEX SANS cap height (854/1000 upm, measured with fontTools).
-   Re-measure if the font file is replaced. */
 .tester__preview::after {
   content: "";
   display: inline-block;
@@ -5013,9 +5010,7 @@ html.lenis body {
   border: 0;
 }
 
-
 /* == Designers overlay ================================= */
-/* 화면 가운데 뜨는 팝업 — 넓은 화면 최대 720px, 좁은 화면 폭 80%. 바깥은 옅게 가린다. */
 
 .designers {
   position: fixed;
@@ -5205,7 +5200,6 @@ body.designers-open .page-line {
   }
 }
 
-
 .site-footer__bottom-inner .site-footer__about {
   appearance: none;
   -webkit-appearance: none;
@@ -5230,8 +5224,6 @@ body.designers-open .page-line {
   line-height: 0;
 }
 
-/* 한글 이름은 라틴 기준(middle)보다 위에 그려져 [i]가 내려가 보인다 —
-   한글일 때만 줄을 가운데로 맞춘다. */
 .site-footer__info dd:has(> .tester__ot-info):lang(ko) {
   display: flex;
   align-items: center;
