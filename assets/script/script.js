@@ -2000,31 +2000,21 @@ function initTheme() {
   });
 }
 
-const SNOOZE_KEY = "site-consent-snoozed-until";
-const SNOOZE_MS = 10 * 60 * 1000;
-
+// 한 번만 띄운다 — 띄우는 순간 동의로 간주하고(무시해도 동의) 지금 설정을 저장한다.
 function showConsentBanner() {
   const banner = document.getElementById("consentBanner");
   if (!banner) return;
-
-  let decided = false;
   try {
-    decided = localStorage.getItem(CONSENT_KEY) !== null;
+    if (localStorage.getItem(CONSENT_KEY) !== null) return;
+    localStorage.setItem(CONSENT_KEY, "granted");
+    localStorage.removeItem("site-consent-snoozed-until");
   } catch (e) {
-    decided = false;
+    return;
   }
-
-  let snoozedUntil = 0;
-  try {
-    snoozedUntil = Number(localStorage.getItem(SNOOZE_KEY)) || 0;
-  } catch (e) {
-    snoozedUntil = 0;
-  }
-
-  if (!decided && Date.now() > snoozedUntil) {
-    banner.hidden = false;
-    scheduleConsentAutoDismiss(banner);
-  }
+  storageSet(THEME_KEY, document.documentElement.getAttribute("data-theme") || THEMES[0]);
+  storageSet(LANG_KEY, document.documentElement.getAttribute("data-lang") === "en" ? "en" : "ko");
+  banner.hidden = false;
+  scheduleConsentAutoDismiss(banner);
 }
 
 const CONSENT_AUTO_DISMISS_MS = 6000;
@@ -2037,7 +2027,6 @@ function scheduleConsentAutoDismiss(banner) {
 
   consentDismissTimer = window.setTimeout(() => {
     if (banner.hidden) return;
-    snoozeConsent();
 
     if (prefersReducedMotion()) {
       banner.hidden = true;
@@ -2049,12 +2038,6 @@ function scheduleConsentAutoDismiss(banner) {
       banner.classList.remove("is-leaving");
     }, CONSENT_FADE_MS);
   }, CONSENT_AUTO_DISMISS_MS);
-}
-
-function snoozeConsent() {
-  try {
-    localStorage.setItem(SNOOZE_KEY, String(Date.now() + SNOOZE_MS));
-  } catch (e) {}
 }
 
 function initMorphPlayToggle() {
@@ -2096,21 +2079,12 @@ function initConsentBanner() {
     banner.classList.remove("is-leaving");
   }
 
-  acceptBtn?.addEventListener("click", () => {
+  const dismiss = () => {
     clearAutoDismiss();
-    try {
-      localStorage.setItem(CONSENT_KEY, "granted");
-    } catch (e) {}
     banner.hidden = true;
-    const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
-    storageSet(THEME_KEY, currentTheme);
-  });
-
-  closeBtn?.addEventListener("click", () => {
-    clearAutoDismiss();
-    snoozeConsent();
-    banner.hidden = true;
-  });
+  };
+  acceptBtn?.addEventListener("click", dismiss);
+  closeBtn?.addEventListener("click", dismiss);
 }
 
 const LANG_KEY = "site-lang";

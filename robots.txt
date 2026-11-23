@@ -1,4 +1,10 @@
 User-agent: *
-Disallow: /dev/
+Disallow: /test.html
+Disallow: /test2.html
+Disallow: /docs/
+Disallow: /assets/script/about-fx.js
+Disallow: /assets/script/promo.js
+Disallow: /assets/style/about-fx.css
+Disallow: /assets/style/promo.css
 
 Sitemap: https://apexsans.com/sitemap.xml

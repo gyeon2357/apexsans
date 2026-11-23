@@ -54,16 +54,21 @@
       );
       return svgCache[url];
     }
+    var pts = fetchPoints(url);
     svgCache[url] = fetch(url)
       .then(function (res) {
         if (!res.ok) throw new Error(res.status + " " + res.statusText);
         return res.text();
       })
       .then(function (text) {
+        return pts.then(function () { return text; });
+      })
+      .then(function (text) {
         var wrap = document.createElement("div");
         wrap.innerHTML = text.trim();
         var svg = wrap.querySelector("svg");
         if (!svg) throw new Error("파일 안에서 <svg>를 찾지 못했습니다");
+        svg.setAttribute("data-morph-src", srcKey(url));
         staging().appendChild(svg);
         return svg;
       });
@@ -268,6 +273,62 @@
 
   var sampleCache = typeof Map === "function" ? new Map() : null;
 
+  function srcKey(url) {
+    try {
+      url = new URL(url, document.baseURI).pathname;
+    } catch (e) {}
+    var i = url.indexOf("assets/");
+    return i >= 0 ? url.slice(i) : url.replace(/^\.?\//, "");
+  }
+
+  var pointsTable = {};
+  function fetchPoints(url) {
+    var dir = document.documentElement.getAttribute("data-morph-points");
+    if (!dir || typeof fetch !== "function") return Promise.resolve();
+    var key = srcKey(url);
+    var name = key.replace(/^.*\//, "").replace(/\.svg$/i, ".json");
+    return fetch(dir.replace(/\/?$/, "/") + name)
+      .then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      })
+      .then(function (json) {
+        pointsTable[key] = json;
+      })
+      .catch(function () {});
+  }
+
+  function pointsFromTable(key, count) {
+    if (!key || !key.getAttribute) return null;
+    var src = key.getAttribute("data-morph-src");
+    var entry = src && pointsTable[src] && pointsTable[src][count];
+    if (!entry) return null;
+    return entry.map(function (shape) {
+      return shape.map(function (flat) {
+        var pts = new Array(flat.length / 2);
+        var x = 0;
+        var y = 0;
+        for (var i = 0, j = 0; i < flat.length; i += 2, j++) {
+          x += flat[i];
+          y += flat[i + 1];
+          pts[j] = [x / 10, y / 10];
+        }
+        return pts;
+      });
+    });
+  }
+
+  function fits(pts, shapes, count) {
+    if (!pts || pts.length !== shapes.length) return false;
+    for (var i = 0; i < shapes.length; i++) {
+      if (pts[i].length !== shapes[i].rings.length) return false;
+      for (var k = 0; k < pts[i].length; k++) {
+        if (pts[i][k].length !== count) return false;
+      }
+    }
+    return true;
+  }
+
   function cachedRingPoints(key, shapes, count) {
     function fresh() {
       return shapes.map(function (shape) {
@@ -277,8 +338,71 @@
     if (!sampleCache || key == null) return fresh();
     var perSrc = sampleCache.get(key);
     if (!perSrc) { perSrc = {}; sampleCache.set(key, perSrc); }
-    if (!perSrc[count]) perSrc[count] = fresh();
+    if (!fits(perSrc[count], shapes, count)) {
+      var pre = pointsFromTable(key, count);
+      perSrc[count] = fits(pre, shapes, count) ? pre : fresh();
+      if (perSrc[count] !== pre) sampleStats.fresh++;
+      else sampleStats.table++;
+    }
     return perSrc[count];
+  }
+  var sampleStats = { table: 0, fresh: 0, idle: 0 };
+
+  var idle =
+    typeof window.requestIdleCallback === "function"
+      ? function (cb) { return window.requestIdleCallback(cb, { timeout: 500 }); }
+      : function (cb) {
+          return setTimeout(function () {
+            var end = performance.now() + 8;
+            cb({ timeRemaining: function () { return Math.max(0, end - performance.now()); }, didTimeout: false });
+          }, 16);
+        };
+
+  // 표에 없는 원본만 골라 유휴 시간에 고리 하나씩 뽑아 캐시를 채운다.
+  function warmSamples(sources, count, done) {
+    var jobs = [];
+    sources.forEach(function (src) {
+      if (!src || typeof src === "string" || !src.cloneNode || !sampleCache) return;
+      var perSrc = sampleCache.get(src);
+      if (perSrc && perSrc[count]) return;
+      var clone = toSvgElement(src);
+      if (!clone) return;
+      var shapes = collectShapes(clone);
+      var pre = pointsFromTable(src, count);
+      if (fits(pre, shapes, count)) {
+        if (!perSrc) { perSrc = {}; sampleCache.set(src, perSrc); }
+        perSrc[count] = pre;
+        sampleStats.table++;
+        if (clone.parentNode) clone.parentNode.removeChild(clone);
+        return;
+      }
+      var out = shapes.map(function (s) { return new Array(s.rings.length); });
+      shapes.forEach(function (s, i) {
+        s.rings.forEach(function (el, k) { jobs.push({ src: src, out: out, i: i, k: k, el: el }); });
+      });
+      jobs.push({ src: src, out: out, clone: clone, end: true });
+    });
+    if (!jobs.length) return done();
+
+    var at = 0;
+    function work(deadline) {
+      while (at < jobs.length && (deadline.timeRemaining() > 1 || deadline.didTimeout)) {
+        var j = jobs[at++];
+        if (j.end) {
+          var ps = sampleCache.get(j.src);
+          if (!ps) { ps = {}; sampleCache.set(j.src, ps); }
+          ps[count] = j.out;
+          sampleStats.idle++;
+          if (j.clone.parentNode) j.clone.parentNode.removeChild(j.clone);
+        } else {
+          j.out[j.i][j.k] = sample(j.el, count);
+        }
+        if (deadline.didTimeout) break;
+      }
+      if (at < jobs.length) idle(work);
+      else done();
+    }
+    idle(work);
   }
 
   function sample(el, count) {
@@ -1294,12 +1418,15 @@
           onDone();
         },
       });
-      var built = opt.steps
-        ? sequence(Object.assign(withDone, { steps: resolved }))
-        : create(Object.assign(withDone, { from: resolved[0], to: resolved[1] }));
-      if (!built) return;
-      inst = built;
-      attach();
+      warmSamples(resolved, opt.samples || DEFAULTS.samples, function () {
+        if (cancelled) return;
+        var built = opt.steps
+          ? sequence(Object.assign(withDone, { steps: resolved }))
+          : create(Object.assign(withDone, { from: resolved[0], to: resolved[1] }));
+        if (!built) return;
+        inst = built;
+        attach();
+      });
     }
 
     var phase = "toLast";
@@ -1481,6 +1608,30 @@
     autoplayOnView: autoplayOnView,
     autoInit: autoInit,
     setPaused: setPaused,
+    sampleStats: sampleStats,
+    _sampleUrl: function (url, count) {
+      return fetchSvg(url).then(function (svg) {
+        var clone = toSvgElement(svg);
+        var shapes = collectShapes(clone);
+        var res = shapes.map(function (s) {
+          return s.rings.map(function (el) {
+            var flat = [];
+            var px = 0;
+            var py = 0;
+            sample(el, count).forEach(function (p) {
+              var x = Math.round(p[0] * 10);
+              var y = Math.round(p[1] * 10);
+              flat.push(x - px, y - py);
+              px = x;
+              py = y;
+            });
+            return flat;
+          });
+        });
+        if (clone.parentNode) clone.parentNode.removeChild(clone);
+        return res;
+      });
+    },
     isPaused: function () {
       return globalPaused;
     },
