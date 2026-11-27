@@ -1725,9 +1725,8 @@ body.intro-lock .main-screen {
   background: #fefefe;
 }
 
-.use-cases__img--cover {
-  object-fit: cover;
-  background: var(--bg-alt);
+.use-cases__img--dark {
+  background: #000;
 }
 
 .use-cases__item .placeholder-media {
